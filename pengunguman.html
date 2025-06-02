@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengumuman - Dashboard Mahasiswa</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #7FB3D3;
+            --secondary-color: #B8D4E3;
+            --accent-color: #E8F4F8;
+            --white: #FFFFFF;
+            --light-gray: #F8F9FA;
+            --text-dark: #2C3E50;
+            --shadow: 0 4px 12px rgba(127, 179, 211, 0.15);
+            --danger: #E74C3C;
+            --warning: #F39C12;
+            --success: #27AE60;
+        }
+
+        body {
+            background: linear-gradient(135deg, #E8F4F8 0%, #B8D4E3 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: var(--shadow);
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 2rem;
+        }
+
+        .profile-section {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-pic {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 25px;
+            padding: 0.5rem 1.5rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .announcement-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .announcement-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .announcement-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(127, 179, 211, 0.25);
+        }
+
+        .announcement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .mata-kuliah-badge {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .announcement-title {
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .announcement-description {
+            color: #6C757D;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .announcement-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .announcement-date {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .announcement-date i {
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .announcement-dosen {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .announcement-dosen i {
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .filter-section {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .filter-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 2px solid var(--primary-color);
+            background: transparent;
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .filter-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .section-title {
+            color: var(--text-dark);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6C757D;
+            display: none;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                margin-bottom: 1rem;
+            }
+            
+            .announcement-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .filter-buttons {
+                justify-content: center;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <div class="profile-section">
+                            <div class="d-flex align-items-center">
+                                <div class="profile-pic me-3">
+                                    <i class="fas fa-bullhorn"></i>
+                                </div>
+                                <div>
+                                    <h5 class="welcome-text m-0">Pengumuman</h5>
+                                    <p class="student-id m-0">Informasi terbaru dari dosen</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="dash-mahasiswa.html" class="back-btn" onclick="goBack()">
+                            <i class="fas fa-arrow-left me-2"></i>Kembali
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Filter Section -->
+            <div class="filter-section fade-in">
+                <h5 class="filter-title">
+                    <i class="fas fa-filter me-2"></i>Filter Mata Kuliah
+                </h5>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" onclick="filterAnnouncements('all')">Semua</button>
+                    <button class="filter-btn" onclick="filterAnnouncements('aljabar-linear')">Aljabar Linear & Matriks</button>
+                    <button class="filter-btn" onclick="filterAnnouncements('pemrograman-web')">Pemrograman Web</button>
+                    <button class="filter-btn" onclick="filterAnnouncements('analisis-desain')">Analisis Desain</button>
+                    <button class="filter-btn" onclick="filterAnnouncements('multimedia')">Multimedia</button>
+                    <button class="filter-btn" onclick="filterAnnouncements('big-data')">Big Data</button>
+                    <button class="filter-btn" onclick="filterAnnouncements('kecerdasan-buatan')">Kecerdasan Buatan</button>
+                    <button class="filter-btn" onclick="filterAnnouncements('basis-data')">Basis Data</button>
+                    <button class="filter-btn" onclick="filterAnnouncements('mikrokontroler')">Mikrokontroler</button>
+                </div>
+            </div>
+
+            <!-- Announcement Cards Section -->
+            <div class="row">
+                <div class="col-12">
+                    <h3 class="section-title fade-in">
+                        <i class="fas fa-bullhorn me-2"></i>Daftar Pengumuman
+                    </h3>
+                </div>
+            </div>
+
+            <div id="announcementContainer" class="row">
+                <!-- Aljabar Linear & Matriks -->
+                <div class="col-12 fade-in">
+                    <div class="announcement-card" data-subject="aljabar-linear">
+                        <div class="announcement-header">
+                            <span class="mata-kuliah-badge">Aljabar Linear & Matriks</span>
+                        </div>
+                        <h4 class="announcement-title">Pembatalan Kuliah</h4>
+                        <p class="announcement-description">
+                            Kuliah Aljabar Linear & Matriks pada tanggal 3 Juni 2025 ditiadakan karena dosen, Dr. Budi Santoso, M.Si., sedang menghadiri seminar nasional.
+                        </p>
+                        <div class="announcement-info">
+                            <div class="announcement-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Diumumkan: 2 Juni 2025 - 08:00</span>
+                            </div>
+                            <div class="announcement-dosen">
+                                <i class="fas fa-user"></i>
+                                <span>Dosen: Dr. Budi Santoso, M.Si.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pemrograman Web -->
+                <div class="col-12 fade-in">
+                    <div class="announcement-card" data-subject="pemrograman-web">
+                        <div class="announcement-header">
+                            <span class="mata-kuliah-badge">Pemrograman Web</span>
+                        </div>
+                        <h4 class="announcement-title">Perubahan Ruangan</h4>
+                        <p class="announcement-description">
+                            Kuliah Pemrograman Web pada tanggal 4 Juni 2025 dipindahkan ke Ruang 301 Gedung C karena ruang sebelumnya digunakan untuk rapat fakultas.
+                        </p>
+                        <div class="announcement-info">
+                            <div class="announcement-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Diumumkan: 2 Juni 2025 - 09:00</span>
+                            </div>
+                            <div class="announcement-dosen">
+                                <i class="fas fa-user"></i>
+                                <span>Dosen: Ir. Siti Aminah, M.Kom.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analisis Desain -->
+                <div class="col-12 fade-in">
+                    <div class="announcement-card" data-subject="analisis-desain">
+                        <div class="announcement-header">
+                            <span class="mata-kuliah-badge">Analisis Desain</span>
+                        </div>
+                        <h4 class="announcement-title">Kuliah Pengganti</h4>
+                        <p class="announcement-description">
+                            Kuliah Analisis Desain yang batal pada 30 Mei 2025 akan diganti pada 5 Juni 2025 pukul 13:00 di Ruang 204 Gedung B.
+                        </p>
+                        <div class="announcement-info">
+                            <div class="announcement-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Diumumkan: 1 Juni 2025 - 15:00</span>
+                            </div>
+                            <div class="announcement-dosen">
+                                <i class="fas fa-user"></i>
+                                <span>Dosen: Dr. Rina Wulandari, M.T.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Multimedia -->
+                <div class="col-12 fade-in">
+                    <div class="announcement-card" data-subject="multimedia">
+                        <div class="announcement-header">
+                            <span class="mata-kuliah-badge">Multimedia</span>
+                        </div>
+                        <h4 class="announcement-title">Pembatalan Kuliah</h4>
+                        <p class="announcement-description">
+                            Kuliah Multimedia pada tanggal 4 Juni 2025 ditiadakan karena dosen, Prof. Andi Wijaya, M.M., sedang sakit.
+                        </p>
+                        <div class="announcement-info">
+                            <div class="announcement-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Diumumkan: 2 Juni 2025 - 10:00</span>
+                            </div>
+                            <div class="announcement-dosen">
+                                <i class="fas fa-user"></i>
+                                <span>Dosen: Prof. Andi Wijaya, M.M.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Big Data -->
+                <div class="col-12 fade-in">
+                    <div class="announcement-card" data-subject="big-data">
+                        <div class="announcement-header">
+                            <span class="mata-kuliah-badge">Big Data</span>
+                        </div>
+                        <h4 class="announcement-title">Perubahan Jadwal</h4>
+                        <p class="announcement-description">
+                            Kuliah Big Data pada 3 Juni 2025 diubah waktunya menjadi pukul 15:00 di Ruang 405 Gedung D karena ada kegiatan kampus.
+                        </p>
+                        <div class="announcement-info">
+                            <div class="announcement-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Diumumkan: 2 Juni 2025 - 07:30</span>
+                            </div>
+                            <div class="announcement-dosen">
+                                <i class="fas fa-user"></i>
+                                <span>Dosen: Dr. Haryanto, M.Kom.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kecerdasan Buatan -->
+                <div class="col-12 fade-in">
+                    <div class="announcement-card" data-subject="kecerdasan-buatan">
+                        <div class="announcement-header">
+                            <span class="mata-kuliah-badge">Kecerdasan Buatan</span>
+                        </div>
+                        <h4 class="announcement-title">Pembatalan Kuliah</h4>
+                        <p class="announcement-description">
+                            Kuliah Kecerdasan Buatan pada tanggal 5 Juni 2025 ditiadakan karena dosen, Prof. Dewi Sartika, Ph.D., sedang dinas luar.
+                        </p>
+                        <div class="announcement-info">
+                            <div class="announcement-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Diumumkan: 2 Juni 2025 - 11:00</span>
+                            </div>
+                            <div class="announcement-dosen">
+                                <i class="fas fa-user"></i>
+                                <span>Dosen: Prof. Dewi Sartika, Ph.D.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Basis Data -->
+                <div class="col-12 fade-in">
+                    <div class="announcement-card" data-subject="basis-data">
+                        <div class="announcement-header">
+                            <span class="mata-kuliah-badge">Basis Data</span>
+                        </div>
+                        <h4 class="announcement-title">Perubahan Ruangan</h4>
+                        <p class="announcement-description">
+                            Kuliah Basis Data pada tanggal 6 Juni 2025 dipindahkan ke Ruang 102 Gedung A karena renovasi ruang sebelumnya.
+                        </p>
+                        <div class="announcement-info">
+                            <div class="announcement-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Diumumkan: 2 Juni 2025 - 12:00</span>
+                            </div>
+                            <div class="announcement-dosen">
+                                <i class="fas fa-user"></i>
+                                <span>Dosen: Ir. Faisal Rahman, M.T.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mikrokontroler -->
+                <div class="col-12 fade-in">
+                    <div class="announcement-card" data-subject="mikrokontroler">
+                        <div class="announcement-header">
+                            <span class="mata-kuliah-badge">Mikrokontroler</span>
+                        </div>
+                        <h4 class="announcement-title">Kuliah Pengganti</h4>
+                        <p class="announcement-description">
+                            Kuliah Mikrokontroler yang batal pada 1 Juni 2025 akan diganti pada 7 Juni 2025 pukul 10:00 di Ruang 305 Gedung C.
+                        </p>
+                        <div class="announcement-info">
+                            <div class="announcement-date">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Diumumkan: 2 Juni 2025 - 14:00</span>
+                            </div>
+                            <div class="announcement-dosen">
+                                <i class="fas fa-user"></i>
+                                <span>Dosen: Dr. Eko Prasetyo, M.Eng.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state">
+                <i class="fas fa-clipboard-list"></i>
+                <h4>Tidak ada pengumuman ditemukan</h4>
+                <p>Tidak ada pengumuman yang sesuai dengan filter yang dipilih.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Filter pengumuman berdasarkan mata kuliah
+        function filterAnnouncements(subject) {
+            const cards = document.querySelectorAll('.announcement-card');
+            const emptyState = document.getElementById('emptyState');
+            let visibleCards = 0;
+
+            cards.forEach(card => {
+                if (subject === 'all' || card.dataset.subject === subject) {
+                    card.parentElement.style.display = 'block';
+                    visibleCards++;
+                } else {
+                    card.parentElement.style.display = 'none';
+                }
+            });
+
+            emptyState.style.display = visibleCards === 0 ? 'block' : 'none';
+
+            // Update tombol filter aktif
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('onclick').includes(subject)) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Kembali ke halaman dashboard
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
