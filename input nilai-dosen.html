@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Nilai - Aljabar Linear & Matriks</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #B6D0EF;
+            --color-secondary: #63A3F1;
+            --color-light: #FAFFEE;
+            --color-accent: #4F8A9E;
+            --color-white: #FFFFFF;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--color-light) 0%, var(--color-primary) 100%);
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-secondary) 100%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            color: var(--color-white) !important;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .container-fluid {
+            padding: 20px;
+        }
+
+        .class-selector {
+            background: var(--color-white);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .assignment-selector {
+            background: var(--color-white);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .grade-table-container {
+            background: var(--color-white);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background: linear-gradient(45deg, var(--color-secondary), var(--color-primary));
+            color: var(--color-white);
+            border: none;
+            font-weight: bold;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: var(--color-light);
+        }
+
+        .grade-input {
+            width: 80px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 8px;
+            font-weight: bold;
+        }
+
+        .grade-input:focus {
+            border-color: var(--color-secondary);
+            box-shadow: 0 0 0 0.2rem rgba(99, 163, 241, 0.25);
+        }
+
+        .grade-input.excellent {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+
+        .grade-input.good {
+            background-color: #d1ecf1;
+            border-color: #17a2b8;
+        }
+
+        .grade-input.average {
+            background-color: #fff3cd;
+            border-color: #ffc107;
+        }
+
+        .grade-input.poor {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .btn-custom {
+            background: linear-gradient(45deg, var(--color-secondary), var(--color-accent));
+            color: var(--color-white);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: var(--color-white);
+        }
+
+        .btn-upload {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-upload:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: white;
+        }
+
+        .student-name {
+            text-align: left !important;
+            font-weight: bold;
+            color: var(--color-accent);
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-graded {
+            background: #28a745;
+            color: white;
+        }
+
+        .status-pending {
+            background: #ffc107;
+            color: black;
+        }
+
+        .status-not-submitted {
+            background: #dc3545;
+            color: white;
+        }
+
+        .statistics-card {
+            background: var(--color-light);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--color-accent);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .alert-custom {
+            background: linear-gradient(45deg, var(--color-light), var(--color-primary));
+            border: 1px solid var(--color-secondary);
+            color: var(--color-accent);
+            border-radius: 10px;
+        }
+
+        .form-select, .form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 10px 15px;
+        }
+
+        .form-select:focus, .form-control:focus {
+            border-color: var(--color-secondary);
+            box-shadow: 0 0 0 0.2rem rgba(99, 163, 241, 0.25);
+        }
+
+        .section-title {
+            color: var(--color-accent);
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .grade-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .summary-item {
+            background: var(--color-white);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .summary-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--color-accent);
+        }
+
+        .summary-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <span class="navbar-brand">
+                <i class="fas fa-edit me-2"></i>
+                Input Nilai - Aljabar Linear & Matriks
+            </span>
+            <div class="d-flex align-items-center text-white">
+                <i class="fas fa-user-tie me-2"></i>
+                <span>Dashboard Dosen</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <!-- Class Selector -->
+        <div class="class-selector">
+            <h4 class="section-title">
+                <i class="fas fa-users me-2"></i>
+                Pilih Kelas
+            </h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <select class="form-select" id="classSelect" onchange="loadClass()">
+                        <option value="">Pilih Kelas...</option>
+                        <option value="IF02">IF02</option>
+                        <option value="IF03">IF03</option>
+                        <option value="IF04">IF04</option>
+                        <option value="IF05">IF05</option>
+                        <option value="IF06">IF06</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <div class="alert alert-custom mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Pilih kelas untuk mulai input nilai mahasiswa
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assignment Selector -->
+        <div class="assignment-selector" id="assignmentSelector" style="display: none;">
+            <h4 class="section-title">
+                <i class="fas fa-tasks me-2"></i>
+                Pilih Tugas
+            </h4>
+            <div class="row">
+                <div class="col-md-8">
+                    <select class="form-select" id="assignmentSelect" onchange="loadAssignment()">
+                        <option value="">Pilih Tugas...</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-custom w-100" onclick="loadAllGrades()">
+                        <i class="fas fa-table me-2"></i>
+                        Lihat Semua Nilai
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grade Input Table -->
+        <div class="grade-table-container" id="gradeContainer" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="section-title mb-0">
+                    <i class="fas fa-clipboard-list me-2"></i>
+                    <span id="currentTitle">Input Nilai</span>
+                </h4>
+                <div>
+                    <button class="btn btn-upload me-2" onclick="saveGrades()">
+                        <i class="fas fa-save me-2"></i>
+                        Simpan Nilai
+                    </button>
+                    <button class="btn btn-custom" onclick="exportGrades()">
+                        <i class="fas fa-download me-2"></i>
+                        Export Excel
+                    </button>
+                </div>
+            </div>
+
+            <div id="statisticsSection"></div>
+
+            <div class="table-responsive">
+                <table class="table" id="gradeTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">No</th>
+                            <th style="width: 25%;">Nama Mahasiswa</th>
+                            <th style="width: 15%;">Status</th>
+                            <th style="width: 15%;">Nilai</th>
+                            <th style="width: 15%;">Grade</th>
+                            <th style="width: 25%;">Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gradeTableBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="grade-summary" id="gradeSummary" style="display: none;">
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Data mahasiswa untuk setiap kelas
+        const classData = {
+            'IF02': [
+                'Ahmad Rizki', 'Siti Nurhaliza', 'Budi Santoso', 'Maya Sari', 'Reza Pratama',
+                'Indira Putri', 'Fajar Maulana', 'Dewi Lestari', 'Arief Rahman', 'Nisa Amelia',
+                'Dian Prakoso', 'Lina Marlina', 'Eko Susanto', 'Rina Wulandari'
+            ],
+            'IF03': [
+                'Agus Setiawan', 'Lia Permata', 'Rudi Hartono', 'Sari Indah', 'Joko Widodo',
+                'Nina Kartika', 'Bayu Aji', 'Fitri Handayani', 'Andi Wijaya', 'Mila Kusuma',
+                'Rio Pratama', 'Tina Rahayu', 'Hendra Gunawan', 'Ika Sari'
+            ],
+            'IF04': [
+                'Dedi Kurniawan', 'Wati Suharto', 'Gilang Ramadhan', 'Sinta Dewi', 'Fery Setiawan',
+                'Ratna Sari', 'Doni Saputra', 'Yuni Astuti', 'Rangga Pratama', 'Mega Wati',
+                'Iqbal Maulana', 'Vina Marlina', 'Surya Wijaya', 'Desi Ratnasari'
+            ],
+            'IF05': [
+                'Teguh Santoso', 'Lilis Suryani', 'Wahyu Pranoto', 'Siska Amelia', 'Hendri Gunawan',
+                'Puji Lestari', 'Ridwan Kamil', 'Intan Permatasari', 'Guntur Wibowo', 'Annisa Rahma',
+                'Yoga Pratama', 'Diah Ayu', 'Bambang Sugito', 'Erni Susanti'
+            ],
+            'IF06': [
+                'Irfan Hakim', 'Nita Sari', 'Dimas Pratama', 'Lia Amelia', 'Bima Sakti',
+                'Rini Handayani', 'Yanto Setiawan', 'Putri Maharani', 'Candra Wijaya', 'Tari Suharto',
+                'Firman Utomo', 'Selly Oktavia', 'Danang Febriyanto', 'Mira Rahmawati'
+            ]
+        };
+
+        // Data tugas
+        const assignments = [
+            {
+                id: 1,
+                title: 'Tugas 1: Operasi Dasar Matriks',
+                deadline: '2025-06-15'
+            },
+            {
+                id: 2,
+                title: 'Tugas 2: Determinan dan Invers Matriks',
+                deadline: '2025-06-22'
+            },
+            {
+                id: 3,
+                title: 'Tugas 3: Sistem Persamaan Linear',
+                deadline: '2025-06-29'
+            },
+            {
+                id: 4,
+                title: 'Tugas 4: Nilai Eigen dan Vektor Eigen',
+                deadline: '2025-07-06'
+            },
+            {
+                id: 5,
+                title: 'Tugas 5: Diagonalisasi Matriks',
+                deadline: '2025-07-13'
+            }
+        ];
+
+        // Storage untuk nilai
+        let gradesData = {};
+        let currentClass = '';
+        let currentAssignment = '';
+
+        // Load class data
+        function loadClass() {
+            const classSelect = document.getElementById('classSelect');
+            currentClass = classSelect.value;
+            
+            if (currentClass) {
+                // Show assignment selector
+                document.getElementById('assignmentSelector').style.display = 'block';
+                
+                // Populate assignment options
+                const assignmentSelect = document.getElementById('assignmentSelect');
+                assignmentSelect.innerHTML = '<option value="">Pilih Tugas...</option>';
+                
+                assignments.forEach(assignment => {
+                    const option = document.createElement('option');
+                    option.value = assignment.id;
+                    option.textContent = assignment.title;
+                    assignmentSelect.appendChild(option);
+                });
+                
+                // Hide grade container
+                document.getElementById('gradeContainer').style.display = 'none';
+            } else {
+                document.getElementById('assignmentSelector').style.display = 'none';
+                document.getElementById('gradeContainer').style.display = 'none';
+            }
+        }
+
+        // Load assignment
+        function loadAssignment() {
+            const assignmentSelect = document.getElementById('assignmentSelect');
+            currentAssignment = assignmentSelect.value;
+            
+            if (currentAssignment && currentClass) {
+                const assignment = assignments.find(a => a.id == currentAssignment);
+                document.getElementById('currentTitle').textContent = `${assignment.title} - Kelas ${currentClass}`;
+                
+                loadGradeTable(false);
+                document.getElementById('gradeContainer').style.display = 'block';
+            } else {
+                document.getElementById('gradeContainer').style.display = 'none';
+            }
+        }
+
+        // Load all grades
+        function loadAllGrades() {
+            if (currentClass) {
+                document.getElementById('currentTitle').textContent = `Semua Nilai - Kelas ${currentClass}`;
+                loadGradeTable(true);
+                document.getElementById('gradeContainer').style.display = 'block';
+            }
+        }
+
+        // Load grade table
+        function loadGradeTable(showAll = false) {
+            const tbody = document.getElementById('gradeTableBody');
+            const students = classData[currentClass];
+            
+            if (showAll) {
+                // Show all assignments table
+                let tableHTML = '';
+                tableHTML += `
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Mahasiswa</th>
+                        ${assignments.map(a => `<th>${a.title}</th>`).join('')}
+                        <th>Rata-rata</th>
+                    </tr>
+                `;
+                
+                students.forEach((student, index) => {
+                    let totalGrade = 0;
+                    let gradeCount = 0;
+                    let gradesHTML = '';
+                    
+                    assignments.forEach(assignment => {
+                        const key = `${currentClass}_${assignment.id}_${student}`;
+                        const grade = gradesData[key] || '';
+                        if (grade !== '') {
+                            totalGrade += parseFloat(grade);
+                            gradeCount++;
+                        }
+                        gradesHTML += `<td>${grade || '-'}</td>`;
+                    });
+                    
+                    const average = gradeCount > 0 ? (totalGrade / gradeCount).toFixed(1) : '-';
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td class="student-name">${student}</td>
+                            ${gradesHTML}
+                            <td><strong>${average}</strong></td>
+                        </tr>
+                    `;
+                });
+                
+                tbody.innerHTML = tableHTML;
+                document.getElementById('gradeSummary').style.display = 'none';
+                
+            } else {
+                // Show single assignment table
+                let tableHTML = '';
+                students.forEach((student, index) => {
+                    const key = `${currentClass}_${currentAssignment}_${student}`;
+                    const grade = gradesData[key] || '';
+                    const status = getSubmissionStatus();
+                    
+                    tableHTML += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td class="student-name">${student}</td>
+                            <td>${getStatusBadge(status)}</td>
+                            <td>
+                                <input type="number" 
+                                       class="form-control grade-input" 
+                                       min="0" max="100" 
+                                       value="${grade}"
+                                       onchange="updateGrade('${key}', this.value)"
+                                       onkeyup="updateGradeColor(this)">
+                            </td>
+                            <td id="grade_${key}">${getGradeLetter(grade)}</td>
+                            <td>
+                                <input type="text" 
+                                       class="form-control" 
+                                       placeholder="Keterangan..."
+                                       value="${gradesData[key + '_note'] || ''}"
+                                       onchange="updateNote('${key}', this.value)">
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                tbody.innerHTML = tableHTML;
+                updateStatistics();
+                document.getElementById('gradeSummary').style.display = 'grid';
+            }
+        }
+
+        // Get submission status (random for demo)
+        function getSubmissionStatus() {
+            const statuses = ['submitted', 'late', 'not-submitted'];
+            return statuses[Math.floor(Math.random() * statuses.length)];
+        }
+
+        // Get status badge
+        function getStatusBadge(status) {
+            switch(status) {
+                case 'submitted':
+                    return '<span class="status-badge status-graded">Mengumpul</span>';
+                case 'late':
+                    return '<span class="status-badge status-pending">Terlambat</span>';
+                case 'not-submitted':
+                    return '<span class="status-badge status-not-submitted">Belum</span>';
+                default:
+                    return '<span class="status-badge status-pending">-</span>';
+            }
+        }
+
+        // Update grade
+        function updateGrade(key, value) {
+            gradesData[key] = value;
+            document.getElementById(`grade_${key}`).textContent = getGradeLetter(value);
+            updateStatistics();
+        }
+
+        // Update note
+        function updateNote(key, value) {
+            gradesData[key + '_note'] = value;
+        }
+
+        // Update grade color based on value
+        function updateGradeColor(input) {
+            const value = parseFloat(input.value);
+            input.classList.remove('excellent', 'good', 'average', 'poor');
+            
+            if (value >= 85) {
+                input.classList.add('excellent');
+            } else if (value >= 75) {
+                input.classList.add('good');
+            } else if (value >= 65) {
+                input.classList.add('average');
+            } else if (value > 0) {
+                input.classList.add('poor');
+            }
+        }
+
+        // Get grade letter
+        function getGradeLetter(grade) {
+            if (!grade || grade === '') return '-';
+            const value = parseFloat(grade);
+            if (value >= 85) return 'A';
+            if (value >= 75) return 'B';
+            if (value >= 65) return 'C';
+            if (value >= 55) return 'D';
+            return 'E';
+        }
+
+        // Update statistics
+        function updateStatistics() {
+            const students = classData[currentClass];
+            let graded = 0;
+            let totalGrade = 0;
+            let gradeDistribution = {A: 0, B: 0, C: 0, D: 0, E: 0};
+            
+            students.forEach(student => {
+                const key = `${currentClass}_${currentAssignment}_${student}`;
+                const grade = gradesData[key];
+                if (grade && grade !== '') {
+                    graded++;
+                    const value = parseFloat(grade);
+                    totalGrade += value;
+                    const letter = getGradeLetter(grade);
+                    gradeDistribution[letter]++;
+                }
+            });
+            
+            const average = graded > 0 ? (totalGrade / graded).toFixed(1) : 0;
+            const percentage = ((graded / students.length) * 100).toFixed(1);
+            
+            // Update statistics section
+            document.getElementById('statisticsSection').innerHTML = `
+                <div class="statistics-card">
+                    <h5 style="color: var(--color-accent); margin-bottom: 15px;">
+                        <i class="fas fa-chart-bar me-2"></i>Statistik Penilaian
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="stat-row">
+                                <span>Sudah Dinilai:</span>
+                                <strong>${graded}/${students.length} (${percentage}%)</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-row">
+                                <span>Rata-rata:</span>
+                                <strong>${average}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="stat-row">
+                                <span>Distribusi:</span>
+                                <span>A:${gradeDistribution.A} B:${gradeDistribution.B} C:${gradeDistribution.C} D:${gradeDistribution.D} E:${gradeDistribution.E}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Update grade summary
+            document.getElementById('gradeSummary').innerHTML = `
+                <div class="summary-item">
+                    <div class="summary-number">${graded}</div>
+                    <div class="summary-label">Sudah Dinilai</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-number">${students.length - graded}</div>
+                    <div class="summary-label">Belum Dinilai</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-number">${average}</div>
+                    <div class="summary-label">Rata-rata</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-number">${gradeDistribution.A}</div>
+                    <div class="summary-label">Grade A</div>
+                </div>
+            `;
+        }
+
+        // Save grades
+        function saveGrades() {
+            alert('Nilai berhasil disimpan ke database!');
+            console.log('Saved grades:', gradesData);
+        }
+
+        // Export grades
+        function exportGrades() {
+            alert('File Excel berhasil didownload!');
+            console.log('Exporting grades for class:', currentClass);
+        }
+
+        // Initialize grade inputs color on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial colors for existing grade inputs
+            setInterval(() => {
+                document.querySelectorAll('.grade-input').forEach(input => {
+                    if (input.value) {
+                        updateGradeColor(input);
+                    }
+                });
+            }, 500);
+        });
+    </script>
+</body>
+</html>
