@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aljabar & Linear - Upload Materi dan Tugas</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            min-height: calc(100vh - 40px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #89CFF0, #6FA8DC);
+            padding: 30px;
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .content-wrapper {
+            display: flex;
+            min-height: calc(100vh - 140px);
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #B8D4F0, #A1C7E8);
+            padding: 30px 20px;
+            width: 300px;
+            min-width: 300px;
+        }
+
+        .sidebar h3 {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .pertemuan-btn {
+            display: block;
+            width: 100%;
+            background: #FFF8DC;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 20px;
+            margin: 10px 0;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .pertemuan-btn:hover {
+            background: #F0E68C;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .pertemuan-btn.active {
+            background: #FFD700;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #4A90E2, #357ABD);
+            color: white;
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+            margin: -25px -25px 20px -25px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .content-box {
+            background: #f8f9ff;
+            border: 2px solid #e0e7ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #89CFF0, #6FA8DC);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            min-width: 150px;
+        }
+
+        .action-btn:hover {
+            background: linear-gradient(135deg, #6FA8DC, #5A8AC7);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-area {
+            border: 2px dashed #4A90E2;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            background: #f8f9ff;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #357ABD;
+            background: #f0f4ff;
+        }
+
+        .upload-area.dragover {
+            border-color: #FFD700;
+            background: #fffdf0;
+        }
+
+        .file-list {
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .file-item .file-name {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .file-item .file-size {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .remove-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .remove-btn:hover {
+            background: #c82333;
+        }
+
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #4A90E2, #357ABD);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            border-bottom: none;
+        }
+
+        .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                min-width: unset;
+            }
+            
+            .action-buttons {
+                justify-content: center;
+            }
+            
+            .action-btn {
+                min-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header">
+            <i class="fas fa-graduation-cap me-3"></i>
+            Aljabar & Linear
+        </div>
+        
+        <div class="content-wrapper">
+            <div class="sidebar">
+                <h3><i class="fas fa-calendar-alt me-2"></i>Jadwal</h3>
+                <button class="pertemuan-btn active" onclick="selectPertemuan(1, this)">
+                    <i class="fas fa-book me-2"></i>Pertemuan 1
+                </button>
+                <button class="pertemuan-btn" onclick="selectPertemuan(2, this)">
+                    <i class="fas fa-book me-2"></i>Pertemuan 2
+                </button>
+                <button class="pertemuan-btn" onclick="selectPertemuan(3, this)">
+                    <i class="fas fa-book me-2"></i>Pertemuan 3
+                </button>
+                <button class="pertemuan-btn" onclick="selectPertemuan(4, this)">
+                    <i class="fas fa-book me-2"></i>Pertemuan 4
+                </button>
+                <button class="pertemuan-btn" onclick="selectPertemuan(5, this)">
+                    <i class="fas fa-book me-2"></i>Pertemuan 5
+                </button>
+                <button class="pertemuan-btn" onclick="selectPertemuan(6, this)">
+                    <i class="fas fa-book me-2"></i>Pertemuan 6
+                </button>
+                <button class="pertemuan-btn" onclick="selectPertemuan(7, this)">
+                    <i class="fas fa-book me-2"></i>Pertemuan 7
+                </button>
+                <button class="pertemuan-btn" onclick="selectPertemuan(8, this)">
+                    <i class="fas fa-book me-2"></i>Pertemuan 8
+                </button>
+            </div>
+            
+            <div class="main-content">
+                <div class="section-card">
+                    <div class="section-header">
+                        <i class="fas fa-file-alt me-2"></i>Materi
+                    </div>
+                    <div class="content-box" id="materiContent">
+                        Silakan akses materi di menu "Pembelajaran".
+                        Pelajari topik: Operasi Matriks, SPL, Determinan, dan Invers.
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="pilihMateri()">
+                            <i class="fas fa-folder-open me-2"></i>Pilih Materi
+                        </button>
+                        <button class="action-btn" onclick="showUploadModal('materi')">
+                            <i class="fas fa-upload me-2"></i>Upload Materi
+                        </button>
+                    </div>
+                    <input type="file" id="materiInput" class="file-input" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.jpg,.png,.gif">
+                    <div class="file-list" id="materiFileList"></div>
+                    <div class="success-message" id="materiSuccess">
+                        <i class="fas fa-check-circle me-2"></i>Materi berhasil diupload!
+                    </div>
+                </div>
+                
+                <div class="section-card">
+                    <div class="section-header">
+                        <i class="fas fa-tasks me-2"></i>Tugas
+                    </div>
+                    <div class="content-box" id="tugasContent">
+                        Tugas 01,
+                        Selesaikan tugas yang ada di waskita
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="pilihTugas()">
+                            <i class="fas fa-folder-open me-2"></i>Pilih Tugas
+                        </button>
+                        <button class="action-btn" onclick="showUploadModal('tugas')">
+                            <i class="fas fa-upload me-2"></i>Upload Tugas
+                        </button>
+                    </div>
+                    <input type="file" id="tugasInput" class="file-input" multiple accept=".pdf,.doc,.docx,.txt,.jpg,.png,.gif">
+                    <div class="file-list" id="tugasFileList"></div>
+                    <div class="success-message" id="tugasSuccess">
+                        <i class="fas fa-check-circle me-2"></i>Tugas berhasil diupload!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadModalTitle">
+                        <i class="fas fa-upload me-2"></i>Upload File
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="upload-area" id="uploadArea">
+                        <i class="fas fa-cloud-upload-alt fa-3x mb-3 text-primary"></i>
+                        <h5>Drag & Drop file di sini</h5>
+                        <p class="text-muted">atau klik untuk memilih file</p>
+                        <small class="text-muted">Format yang didukung: PDF, DOC, DOCX, PPT, PPTX, TXT, JPG, PNG, GIF</small>
+                    </div>
+                    <input type="file" id="modalFileInput" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.txt,.jpg,.png,.gif">
+                    <div class="file-list" id="modalFileList"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" onclick="uploadFiles()">
+                        <i class="fas fa-upload me-2"></i>Upload
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentPertemuan = 1;
+        let currentUploadType = '';
+        let selectedFiles = [];
+
+        // Data untuk setiap pertemuan
+        const pertemuanData = {
+            1: {
+                materi: "Silakan akses materi di menu \"Pembelajaran\".\nPelajari topik: Operasi Matriks, SPL, Determinan, dan Invers.",
+                tugas: "Tugas 01,\nSelesaikan tugas yang ada di waskita"
+            },
+            2: {
+                materi: "Materi Pertemuan 2:\nPelajari tentang Sistem Persamaan Linear dan metode penyelesaiannya.",
+                tugas: "Tugas 02,\nKerjakan soal-soal tentang eliminasi Gauss dan Gauss-Jordan"
+            },
+            3: {
+                materi: "Materi Pertemuan 3:\nPahami konsep determinan matriks dan cara menghitungnya.",
+                tugas: "Tugas 03,\nHitung determinan matriks 3x3 menggunakan metode kofaktor"
+            },
+            4: {
+                materi: "Materi Pertemuan 4:\nPelajari tentang invers matriks dan aplikasinya.",
+                tugas: "Tugas 04,\nCari invers matriks menggunakan metode adjoint"
+            },
+            5: {
+                materi: "Materi Pertemuan 5:\nPahami konsep ruang vektor dan operasi vektor.",
+                tugas: "Tugas 05,\nAnalisis independensi linear dari kumpulan vektor"
+            },
+            6: {
+                materi: "Materi Pertemuan 6:\nPelajari tentang transformasi linear dan matriks transformasi.",
+                tugas: "Tugas 06,\nBuat matriks transformasi untuk rotasi dan refleksi"
+            },
+            7: {
+                materi: "Materi Pertemuan 7:\nPahami eigenvalue dan eigenvector serta aplikasinya.",
+                tugas: "Tugas 07,\nCari eigenvalue dan eigenvector dari matriks yang diberikan"
+            },
+            8: {
+                materi: "Materi Pertemuan 8:\nPelajari diagonalisasi matriks dan aplikasi dalam sistem dinamis.",
+                tugas: "Tugas 08,\nDiagonalisasi matriks dan aplikasi untuk sistem persamaan diferensial"
+            }
+        };
+
+        function selectPertemuan(num, button) {
+            // Remove active class from all buttons
+            document.querySelectorAll('.pertemuan-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            button.classList.add('active');
+            
+            // Update current pertemuan
+            currentPertemuan = num;
+            
+            // Update content
+            updateContent();
+        }
+
+        function updateContent() {
+            const data = pertemuanData[currentPertemuan];
+            document.getElementById('materiContent').textContent = data.materi;
+            document.getElementById('tugasContent').textContent = data.tugas;
+            
+            // Clear file lists
+            document.getElementById('materiFileList').innerHTML = '';
+            document.getElementById('tugasFileList').innerHTML = '';
+            
+            // Hide success messages
+            document.getElementById('materiSuccess').style.display = 'none';
+            document.getElementById('tugasSuccess').style.display = 'none';
+        }
+
+        function pilihMateri() {
+            document.getElementById('materiInput').click();
+        }
+
+        function pilihTugas() {
+            document.getElementById('tugasInput').click();
+        }
+
+        function showUploadModal(type) {
+            currentUploadType = type;
+            const title = type === 'materi' ? 'Upload Materi' : 'Upload Tugas';
+            document.getElementById('uploadModalTitle').innerHTML = `<i class="fas fa-upload me-2"></i>${title}`;
+            
+            // Clear previous files
+            selectedFiles = [];
+            document.getElementById('modalFileList').innerHTML = '';
+            
+            const modal = new bootstrap.Modal(document.getElementById('uploadModal'));
+            modal.show();
+        }
+
+        // File input handlers
+        document.getElementById('materiInput').addEventListener('change', function(e) {
+            handleFileSelect(e.files, 'materi');
+        });
+
+        document.getElementById('tugasInput').addEventListener('change', function(e) {
+            handleFileSelect(e.files, 'tugas');
+        });
+
+        document.getElementById('modalFileInput').addEventListener('change', function(e) {
+            handleModalFileSelect(e.files);
+        });
+
+        // Upload area click handler
+        document.getElementById('uploadArea').addEventListener('click', function() {
+            document.getElementById('modalFileInput').click();
+        });
+
+        // Drag and drop handlers
+        const uploadArea = document.getElementById('uploadArea');
+
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            handleModalFileSelect(e.dataTransfer.files);
+        });
+
+        function handleFileSelect(files, type) {
+            const fileList = document.getElementById(type + 'FileList');
+            const successMessage = document.getElementById(type + 'Success');
+            
+            displayFiles(files, fileList);
+            successMessage.style.display = 'block';
+            
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+        }
+
+        function handleModalFileSelect(files) {
+            selectedFiles = Array.from(files);
+            displayFiles(files, document.getElementById('modalFileList'));
+        }
+
+        function displayFiles(files, container) {
+            container.innerHTML = '';
+            
+            Array.from(files).forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div>
+                        <div class="file-name">
+                            <i class="fas fa-file me-2"></i>${file.name}
+                        </div>
+                        <div class="file-size">${formatFileSize(file.size)}</div>
+                    </div>
+                    <button class="remove-btn" onclick="removeFile(${index}, this)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                container.appendChild(fileItem);
+            });
+        }
+
+        function removeFile(index, button) {
+            selectedFiles.splice(index, 1);
+            button.parentElement.remove();
+            
+            // Re-index remaining files
+            const fileItems = document.querySelectorAll('#modalFileList .file-item');
+            fileItems.forEach((item, newIndex) => {
+                const removeBtn = item.querySelector('.remove-btn');
+                removeBtn.setAttribute('onclick', `removeFile(${newIndex}, this)`);
+            });
+        }
+
+        function uploadFiles() {
+            if (selectedFiles.length === 0) {
+                alert('Pilih file terlebih dahulu!');
+                return;
+            }
+
+            // Simulate upload process
+            const modal = bootstrap.Modal.getInstance(document.getElementById('uploadModal'));
+            modal.hide();
+
+            // Display files in main content
+            const targetList = document.getElementById(currentUploadType + 'FileList');
+            const successMessage = document.getElementById(currentUploadType + 'Success');
+            
+            displayFiles(selectedFiles, targetList);
+            successMessage.style.display = 'block';
+            
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+
+            // Clear selected files
+            selectedFiles = [];
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Initialize content
+        updateContent();
+    </script>
+</body>
+</html>
