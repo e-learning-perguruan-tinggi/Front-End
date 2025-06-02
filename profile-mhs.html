@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biodata Mahasiswa</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #B6D0EF;
+            --secondary-color: #75A2D7;
+            --white-color: #FFFFFF;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--white-color) 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .main-container {
+            background: var(--white-color);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(181, 208, 239, 0.3);
+            margin: 20px auto;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .profile-section {
+            background: var(--primary-color);
+            padding: 30px;
+            text-align: center;
+            color: #2c3e50;
+        }
+        
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid var(--white-color);
+            object-fit: cover;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .btn-custom {
+            background: var(--secondary-color);
+            border: none;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-custom:hover {
+            background: #5a8bc4;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(117, 162, 215, 0.4);
+            color: white;
+        }
+        
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.2rem rgba(117, 162, 215, 0.25);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .card-header {
+            background: var(--primary-color);
+            border-radius: 15px 15px 0 0 !important;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .table-container {
+            background: var(--white-color);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .table th {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            font-weight: 500;
+        }
+        
+        .table td {
+            border-color: #e9ecef;
+            vertical-align: middle;
+        }
+        
+        .modal-header {
+            background: var(--primary-color);
+            color: #2c3e50;
+            border-bottom: none;
+        }
+        
+        .alert-custom {
+            background-color: #d4edda;
+            border-color: var(--secondary-color);
+            color: #155724;
+            border-radius: 10px;
+        }
+        
+        .nav-tabs .nav-link {
+            color: var(--secondary-color);
+            border: none;
+            font-weight: 500;
+        }
+        
+        .nav-tabs .nav-link.active {
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .tab-content {
+            background: var(--white-color);
+            padding: 25px;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="main-container">
+            <!-- Header -->
+            <div class="header">
+                <h1><i class="fas fa-user-graduate me-3"></i>Sistem Biodata Mahasiswa</h1>
+                <p class="mb-0">Kelola Data Mahasiswa dengan Mudah</p>
+            </div>
+            
+            <!-- Profile Section -->
+            <div class="profile-section">
+                <img id="profileImage" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiBmaWxsPSIjRTVFNUU1Ii8+CjxwYXRoIGQ9Ik03NSA3NUMzOCA3NSA4IDQ1IDggNDVTMzggMTUgNzUgMTVTMTQyIDQ1IDE0MiA0NVMxMTIgNzUgNzUgNzVaIiBmaWxsPSIjOTk5Ii8+CjxwYXRoIGQ9Ik03NSA5MEMxMDUgOTAgMTMwIDExNSAxMzAgMTQ1SDE1MFYxNTBIMEgwVjE0NUMwIDExNSAyNSA5MCA3NSA5MFoiIGZpbGw9IiM5OTkiLz4KPC9zdmc+" alt="Profile" class="profile-img">
+                <h3 id="displayName">Nama Mahasiswa</h3>
+                <p id="displayNim" class="mb-3">NIM: -</p>
+                <button class="btn btn-custom me-2" onclick="openEditModal()">
+                    <i class="fas fa-edit me-2"></i>Edit Biodata
+                </button>
+                <button class="btn btn-custom" onclick="openPasswordModal()">
+                    <i class="fas fa-key me-2"></i>Ubah Password
+                </button>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="container py-4">
+                <!-- Navigation Tabs -->
+                <ul class="nav nav-tabs mb-4" id="mainTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="biodata-tab" data-bs-toggle="tab" data-bs-target="#biodata" type="button" role="tab">
+                            <i class="fas fa-user me-2"></i>Biodata
+                        </button>
+                    </li>
+                    <!-- <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="list-tab" data-bs-toggle="tab" data-bs-target="#list" type="button" role="tab">
+                            <i class="fas fa-list me-2"></i>Daftar Data
+                        </button>
+                    </li> -->
+                </ul>
+                
+                <!-- Tab Content -->
+                <div class="tab-content" id="mainTabContent">
+                    <!-- Biodata Tab -->
+                    <div class="tab-pane fade show active" id="biodata" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong>NIM:</strong>
+                                <p id="biodataNim">-</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>NIK:</strong>
+                                <p id="biodataNik">-</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong>Nama Lengkap:</strong>
+                                <p id="biodataNama">-</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Jenis Kelamin:</strong>
+                                <p id="biodataGender">-</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong>Program Studi:</strong>
+                                <p id="biodataProdi">-</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Agama:</strong>
+                                <p id="biodataAgama">-</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong>Kewarganegaraan:</strong>
+                                <p id="biodataKewarganegaraan">-</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Tempat Lahir:</strong>
+                                <p id="biodataTempatLahir">-</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong>Tanggal Lahir:</strong>
+                                <p id="biodataTanggalLahir">-</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>Nomor Telepon:</strong>
+                                <p id="biodataTelepon">-</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong>Nama SMA/SMK/Univ Asal:</strong>
+                                <p id="biodataSekolahAsal">-</p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <strong>NISN:</strong>
+                                <p id="biodataNisn">-</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <strong>Kota Asal Sekolah:</strong>
+                                <p id="biodataKotaSekolah">-</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- List Tab
+                    <div class="tab-pane fade" id="list" role="tabpanel">
+                        <div class="table-container">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>NIM</th>
+                                            <th>Nama</th>
+                                            <th>Program Studi</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="studentTable">
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted">Belum ada data mahasiswa</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Biodata Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Edit Biodata Mahasiswa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="biodataForm">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">NIM *</label>
+                                <input type="text" class="form-control" id="nim" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">NIK *</label>
+                                <input type="text" class="form-control" id="nik" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Nama Lengkap *</label>
+                                <input type="text" class="form-control" id="namaLengkap" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Jenis Kelamin *</label>
+                                <select class="form-control" id="jenisKelamin" required>
+                                    <option value="">Pilih Jenis Kelamin</option>
+                                    <option value="Laki-laki">Laki-laki</option>
+                                    <option value="Perempuan">Perempuan</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Program Studi *</label>
+                                <input type="text" class="form-control" id="programStudi" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Agama *</label>
+                                <select class="form-control" id="agama" required>
+                                    <option value="">Pilih Agama</option>
+                                    <option value="Islam">Islam</option>
+                                    <option value="Kristen">Kristen</option>
+                                    <option value="Katolik">Katolik</option>
+                                    <option value="Hindu">Hindu</option>
+                                    <option value="Buddha">Buddha</option>
+                                    <option value="Konghucu">Konghucu</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Kewarganegaraan *</label>
+                                <input type="text" class="form-control" id="kewarganegaraan" value="Indonesia" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Tempat Lahir *</label>
+                                <input type="text" class="form-control" id="tempatLahir" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Tanggal Lahir *</label>
+                                <input type="date" class="form-control" id="tanggalLahir" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Nomor Telepon *</label>
+                                <input type="tel" class="form-control" id="nomorTelepon" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Nama SMA/SMK/Univ Asal *</label>
+                                <input type="text" class="form-control" id="sekolahAsal" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">NISN *</label>
+                                <input type="text" class="form-control" id="nisn" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Kota SMA/SMK/Univ Asal *</label>
+                                <input type="text" class="form-control" id="kotaSekolah" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Foto Profil</label>
+                                <input type="file" class="form-control" id="fotoProfil" accept="image/*">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-custom" onclick="saveBiodata()">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Password Modal -->
+    <div class="modal fade" id="passwordModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-key me-2"></i>Ubah Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="passwordForm">
+                        <div class="mb-3">
+                            <label class="form-label">Password Lama *</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="oldPassword" required>
+                                <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('oldPassword')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password Baru *</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="newPassword" required>
+                                <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('newPassword')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <small class="text-muted">Password minimal 6 karakter</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Konfirmasi Password Baru *</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="confirmPassword" required>
+                                <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('confirmPassword')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-custom" onclick="changePassword()">Ubah Password</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Success Alert -->
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999">
+        <div id="successAlert" class="alert alert-custom alert-dismissible fade" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span id="alertMessage"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Data storage (dalam aplikasi nyata, ini akan disimpan di database)
+        let studentData = {
+            nim: '',
+            nik: '',
+            namaLengkap: '',
+            jenisKelamin: '',
+            programStudi: '',
+            agama: '',
+            kewarganegaraan: 'Indonesia',
+            tempatLahir: '',
+            tanggalLahir: '',
+            nomorTelepon: '',
+            sekolahAsal: '',
+            nisn: '',
+            kotaSekolah: '',
+            fotoProfil: ''
+        };
+        
+        let currentPassword = 'admin123'; // Password default
+        let students = []; // Array untuk menyimpan semua data mahasiswa
+        
+        // Fungsi untuk membuka modal edit
+        function openEditModal() {
+            // Isi form dengan data yang ada
+            Object.keys(studentData).forEach(key => {
+                const element = document.getElementById(key);
+                if (element && key !== 'fotoProfil') {
+                    element.value = studentData[key];
+                }
+            });
+            
+            const modal = new bootstrap.Modal(document.getElementById('editModal'));
+            modal.show();
+        }
+        
+        // Fungsi untuk menyimpan biodata
+        function saveBiodata() {
+            const form = document.getElementById('biodataForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            
+            // Ambil data dari form
+            Object.keys(studentData).forEach(key => {
+                const element = document.getElementById(key);
+                if (element && key !== 'fotoProfil') {
+                    studentData[key] = element.value;
+                }
+            });
+            
+            // Handle foto profil
+            const fotoInput = document.getElementById('fotoProfil');
+            if (fotoInput.files && fotoInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    studentData.fotoProfil = e.target.result;
+                    document.getElementById('profileImage').src = e.target.result;
+                };
+                reader.readAsDataURL(fotoInput.files[0]);
+            }
+            
+            // Update tampilan
+            updateDisplay();
+            updateStudentList();
+            
+            // Tutup modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
+            modal.hide();
+            
+            // Tampilkan pesan sukses
+            showAlert('Data biodata berhasil disimpan!');
+        }
+        
+        // Fungsi untuk update tampilan
+        function updateDisplay() {
+            // Update profil section
+            document.getElementById('displayName').textContent = studentData.namaLengkap || 'Nama Mahasiswa';
+            document.getElementById('displayNim').textContent = `NIM: ${studentData.nim || '-'}`;
+            
+            // Update biodata tab
+            document.getElementById('biodataNim').textContent = studentData.nim || '-';
+            document.getElementById('biodataNik').textContent = studentData.nik || '-';
+            document.getElementById('biodataNama').textContent = studentData.namaLengkap || '-';
+            document.getElementById('biodataGender').textContent = studentData.jenisKelamin || '-';
+            document.getElementById('biodataProdi').textContent = studentData.programStudi || '-';
+            document.getElementById('biodataAgama').textContent = studentData.agama || '-';
+            document.getElementById('biodataKewarganegaraan').textContent = studentData.kewarganegaraan || '-';
+            document.getElementById('biodataTempatLahir').textContent = studentData.tempatLahir || '-';
+            document.getElementById('biodataTanggalLahir').textContent = studentData.tanggalLahir ? formatDate(studentData.tanggalLahir) : '-';
+            document.getElementById('biodataTelepon').textContent = studentData.nomorTelepon || '-';
+            document.getElementById('biodataSekolahAsal').textContent = studentData.sekolahAsal || '-';
+            document.getElementById('biodataNisn').textContent = studentData.nisn || '-';
+            document.getElementById('biodataKotaSekolah').textContent = studentData.kotaSekolah || '-';
+        }
+        
+        // Fungsi untuk format tanggal
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+        }
+        
+        // Fungsi untuk update daftar mahasiswa
+        function updateStudentList() {
+            if (studentData.nim && studentData.namaLengkap) {
+                // Cek apakah sudah ada di daftar
+                const existingIndex = students.findIndex(s => s.nim === studentData.nim);
+                
+                if (existingIndex !== -1) {
+                    students[existingIndex] = {...studentData};
+                } else {
+                    students.push({...studentData});
+                }
+                
+                renderStudentTable();
+            }
+        }
+        
+        // Fungsi untuk render tabel mahasiswa
+        function renderStudentTable() {
+            const tbody = document.getElementById('studentTable');
+            
+            if (students.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Belum ada data mahasiswa</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = students.map((student, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${student.nim}</td>
+                    <td>${student.namaLengkap}</td>
+                    <td>${student.programStudi}</td>
+                    <td>
+                        <button class="btn btn-sm btn-custom me-1" onclick="viewStudent(${index})">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-warning me-1" onclick="editStudent(${index})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteStudent(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // Fungsi untuk melihat detail mahasiswa
+        function viewStudent(index) {
+            studentData = {...students[index]};
+            updateDisplay();
+            
+            // Pindah ke tab biodata
+            const biodataTab = new bootstrap.Tab(document.getElementById('biodata-tab'));
+            biodataTab.show();
+        }
+        
+        // Fungsi untuk edit mahasiswa
+        function editStudent(index) {
+            studentData = {...students[index]};
+            openEditModal();
+        }
+        
+        // Fungsi untuk hapus mahasiswa
+        function deleteStudent(index) {
+            if (confirm('Apakah Anda yakin ingin menghapus data mahasiswa ini?')) {
+                students.splice(index, 1);
+                renderStudentTable();
+                showAlert('Data mahasiswa berhasil dihapus!');
+                
+                // Reset tampilan jika data yang dihapus adalah yang sedang ditampilkan
+                if (studentData.nim === students[index]?.nim) {
+                    studentData = {
+                        nim: '', nik: '', namaLengkap: '', jenisKelamin: '',
+                        programStudi: '', agama: '', kewarganegaraan: 'Indonesia',
+                        tempatLahir: '', tanggalLahir: '', nomorTelepon: '',
+                        sekolahAsal: '', nisn: '', kotaSekolah: '', fotoProfil: ''
+                    };
+                    updateDisplay();
+                }
+            }
+        }
+        
+        // Fungsi untuk membuka modal password
+        function openPasswordModal() {
+            document.getElementById('passwordForm').reset();
+            const modal = new bootstrap.Modal(document.getElementById('passwordModal'));
+            modal.show();
+        }
+        
+        // Fungsi untuk toggle visibility password
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+        
+        // Fungsi untuk mengubah password
+        function changePassword() {
+            const oldPassword = document.getElementById('oldPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Validasi
+            if (!oldPassword || !newPassword || !confirmPassword) {
+                alert('Semua field password harus diisi!');
+                return;
+            }
+            
+            if (oldPassword !== currentPassword) {
+                alert('Password lama tidak sesuai!');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                alert('Password baru minimal 6 karakter!');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                alert('Konfirmasi password tidak sesuai!');
+                return;
+            }
+            
+            // Update password
+            currentPassword = newPassword;
+            
+            // Tutup modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('passwordModal'));
+            modal.hide();
+            
+            // Tampilkan pesan sukses
+            showAlert('Password berhasil diubah!');
+        }
+        
+        // Fungsi untuk menampilkan alert
+        function showAlert(message) {
+            document.getElementById('alertMessage').textContent = message;
+            const alert = document.getElementById('successAlert');
+            alert.classList.add('show');
+            
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Inisialisasi saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDisplay();
+            renderStudentTable();
+        });
+    </script>
+</body>
+</html>
