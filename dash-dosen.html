@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Dosen</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #B6D0EF;
+            --secondary-blue: #63A3F1;
+            --light-green: #FAFFEE;
+            --dark-teal: #4F8A9E;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--light-green) 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--dark-teal) 0%, var(--secondary-blue) 100%);
+            color: var(--white);
+            padding: 20px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .welcome-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .dashboard-grid {
+            padding: 40px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 200px;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 163, 241, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: var(--secondary-blue);
+        }
+
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--dark-teal);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            color: var(--secondary-blue);
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .feature-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--dark-teal);
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .feature-card:hover .feature-title {
+            color: var(--secondary-blue);
+        }
+
+        .feature-description {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .stats-section {
+            background: var(--white);
+            margin: 20px;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark-teal);
+            display: block;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+
+        .quick-actions {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .fab-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary-blue), var(--dark-teal));
+            color: var(--white);
+            border: none;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .fab-button:hover {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+        }
+
+        @media (max-width: 768px) {
+            .welcome-text {
+                font-size: 2rem;
+            }
+            
+            .dashboard-grid {
+                padding: 20px 10px;
+            }
+            
+            .feature-card {
+                margin-bottom: 20px;
+                min-height: 180px;
+                padding: 25px;
+            }
+            
+            .feature-icon {
+                font-size: 3rem;
+            }
+            
+            .feature-title {
+                font-size: 1.2rem;
+            }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(182, 208, 239, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--white);
+            border-top: 4px solid var(--dark-teal);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="container-fluid header-content">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="welcome-text">
+                            <i class="fas fa-chalkboard-teacher me-3"></i>
+                            Dashboard Dosen
+                        </h1>
+                        <p class="subtitle">Kelola pembelajaran dan pantau progress mahasiswa Anda</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        
+                        <div class="d-flex align-items-center justify-content-end">
+                            <div class="me-3">
+                                <small class="d-block">Selamat datang,</small>
+                                <strong>Dr.Budi Santoso, M.Si</strong>
+                            </div>
+                            <div class="rounded-circle" onclick="navigateTo('profile-dosen.html')">
+                            <div class="rounded-circle bg-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-user text-dark"></i>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="stats-section">
+            <div class="row">
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <span class="stat-number">84</span>
+                        <div class="stat-label">Total Mahasiswa</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <span class="stat-number">6</span>
+                        <div class="stat-label">Kelas Aktif</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <span class="stat-number">24</span>
+                        <div class="stat-label">Tugas Pending</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <span class="stat-number">12</span>
+                        <div class="stat-label">Quiz Aktif</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Grid -->
+        <div class="dashboard-grid">
+            <div class="row g-4">
+                <!-- Mahasiswa -->
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="feature-card" onclick="navigateTo('kelas-dosen.html')">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="feature-title">Mahasiswa</div>
+                        <div class="feature-description">
+                            Kelola 6 kelas dengan 84 mahasiswa aktif
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Materi & Tugas -->
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="feature-card" onclick="navigateTo('materitugas-dosen.html')">
+                        <div class="feature-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="feature-title">Materi & Tugas</div>
+                        <div class="feature-description">
+                            Upload materi pembelajaran dan buat tugas baru
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz -->
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="feature-card" onclick="navigateTo('quiz-crud-dosen.html')">
+                        <div class="feature-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <div class="feature-title">Quiz</div>
+                        <div class="feature-description">
+                            Buat dan kelola quiz untuk evaluasi mahasiswa
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pengumuman -->
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="feature-card" onclick="navigateTo('pengumuman-dosen.html')">
+                        <div class="feature-icon">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <div class="feature-title">Pengumuman</div>
+                        <div class="feature-description">
+                            Buat dan publikasikan pengumuman penting
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Tugas -->
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="feature-card" onclick="navigateTo('progress tugas-dosen.html')">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="feature-title">Progress Tugas</div>
+                        <div class="feature-description">
+                            Monitor progress pengerjaan tugas mahasiswa
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ujian -->
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="feature-card" onclick="navigateTo('ujian-dosen.html')">
+                        <div class="feature-icon">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                        <div class="feature-title">Ujian</div>
+                        <div class="feature-description">
+                            Kelola ujian tengah semester dan ujian akhir
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Nilai -->
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="feature-card" onclick="navigateTo('input nilai-dosen.html')">
+                        <div class="feature-icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="feature-title">Input Nilai</div>
+                        <div class="feature-description">
+                            Input dan kelola nilai mahasiswa
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Jadwal -->
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="feature-card" onclick="navigateTo('jadwal-dosen.html')">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="feature-title">Jadwal</div>
+                        <div class="feature-description">
+                            Jadwal Pengajaran Dosen
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Laporan -->
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="feature-card" onclick="navigateTo('laporan-dosen.html')">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="feature-title">Laporan</div>
+                        <div class="feature-description">
+                            Generate laporan akademik dan statistik
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions Button -->
+    <div class="quick-actions">
+        <button class="fab-button" onclick="showQuickMenu()" title="Quick Actions">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Navigation function with loading animation
+        function navigateTo(page) {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.classList.add('active');
+            
+            // Simulate loading time
+            setTimeout(() => {
+                window.location.href = page;
+            }, 500);
+        }
+
+        // Quick menu function
+        function showQuickMenu() {
+            const options = [
+                { text: 'Buat Pengumuman Baru', action: () => navigateTo('pengumuman-dosen.html') },
+                { text: 'Upload Materi', action: () => navigateTo('materitugas-dosen.html') },
+                { text: 'Buat Quiz Baru', action: () => navigateTo('quiz-crud-dosen.html') },
+                { text: 'Cek Progress Tugas', action: () => navigateTo('progress tugas-dosen.html') }
+            ];
+
+            let menu = '<div class="list-group">';
+            options.forEach(option => {
+                menu += `<button class="list-group-item list-group-item-action" onclick="${option.action.toString().replace('() => ', '')}">${option.text}</button>`;
+            });
+            menu += '</div>';
+
+            if (confirm('Pilih aksi cepat:\n1. Buat Pengumuman Baru\n2. Upload Materi\n3. Buat Quiz Baru\n4. Cek Progress Tugas')) {
+                // This is a simplified quick menu - in a real app you'd use a modal
+                navigateTo('pengumuman-dosen.html');
+            }
+        }
+
+        // Coming soon function
+        function showComingSoon() {
+            alert('Fitur ini akan segera hadir!\nTerima kasih atas kesabaran Anda.');
+        }
+
+        // Add some interactive animations on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate cards on scroll
+            const cards = document.querySelectorAll('.feature-card');
+            
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+                observer.observe(card);
+            });
+
+            // Update time every second
+            function updateTime() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('id-ID');
+                console.log('Current time:', timeString);
+            }
+            
+            setInterval(updateTime, 1000);
+            updateTime();
+        });
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey) {
+                switch(e.key) {
+                    case '1':
+                        e.preventDefault();
+                        navigateTo('kelas-dosen.html');
+                        break;
+                    case '2':
+                        e.preventDefault();
+                        navigateTo('materitugas-dosen.html');
+                        break;
+                    case '3':
+                        e.preventDefault();
+                        navigateTo('quiz-crud-dosen.html');
+                        break;
+                    case '4':
+                        e.preventDefault();
+                        navigateTo('pengumuman-dosen.html');
+                        break;
+                }
+            }
+        });
+
+        // Add smooth scrolling behavior
+        document.documentElement.style.scrollBehavior = 'smooth';
+
+        // Preload critical pages
+        function preloadPages() {
+            const criticalPages = [
+                'kelas-dosen.html',
+                'materitugas-dosen.html',
+                'quiz-crud-dosen.html',
+                'pengumuman-dosen.html'
+            ];
+
+            criticalPages.forEach(page => {
+                const link = document.createElement('link');
+                link.rel = 'prefetch';
+                link.href = page;
+                document.head.appendChild(link);
+            });
+        }
+
+        // Call preload after page loads
+        window.addEventListener('load', preloadPages);
+    </script>
+</body>
+</html>
