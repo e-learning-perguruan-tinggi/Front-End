@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Jadwal Ujian - Universitas</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #B6D0EF;
+            --secondary-blue: #63A3F1;
+            --light-green: #FAFFEE;
+            --dark-teal: #4F8A9E;
+            --white: #FFFFFF;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            color: var(--dark-teal) !important;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        
+        .container-fluid {
+            padding: 0;
+        }
+        
+        .main-content {
+            min-height: calc(100vh - 70px);
+            padding: 2rem 0;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .card-header {
+            background: var(--dark-teal);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 1.5rem;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .schedule-table {
+            background: var(--white);
+        }
+        
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table thead th {
+            background: var(--light-green);
+            color: var(--dark-teal);
+            border: none;
+            font-weight: 600;
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .table tbody td {
+            padding: 1rem;
+            text-align: center;
+            vertical-align: middle;
+            border-color: rgba(79, 138, 158, 0.1);
+        }
+        
+        .online-badge {
+            background: var(--secondary-blue);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+        
+        .online-badge:hover {
+            background: var(--dark-teal);
+            transform: scale(1.05);
+        }
+        
+        .subject-name {
+            font-weight: 600;
+            color: var(--dark-teal);
+            margin-bottom: 0.5rem;
+        }
+        
+        .exam-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .dashboard {
+            background: var(--white);
+            border-radius: 15px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--secondary-blue), var(--dark-teal));
+            color: white;
+            padding: 2rem;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .question-card {
+            background: var(--light-green);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--secondary-blue);
+        }
+        
+        .question-number {
+            background: var(--secondary-blue);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .form-check-input:checked {
+            background-color: var(--secondary-blue);
+            border-color: var(--secondary-blue);
+        }
+        
+        .btn-primary {
+            background: var(--secondary-blue);
+            border-color: var(--secondary-blue);
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: var(--dark-teal);
+            border-color: var(--dark-teal);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: var(--dark-teal);
+            border-color: var(--dark-teal);
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--secondary-blue);
+            border-color: var(--secondary-blue);
+            transform: translateY(-2px);
+        }
+        
+        .progress {
+            height: 10px;
+            background: rgba(182, 208, 239, 0.3);
+            border-radius: 5px;
+        }
+        
+        .progress-bar {
+            background: var(--secondary-blue);
+            border-radius: 5px;
+        }
+        
+        .exam-info {
+            background: rgba(99, 163, 241, 0.1);
+            border: 1px solid var(--secondary-blue);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .timer {
+            background: var(--dark-teal);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+        }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            color: var(--dark-teal);
+            font-weight: 600;
+            padding: 1rem 2rem;
+            margin-right: 0.5rem;
+            border-radius: 25px 25px 0 0;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tabs .nav-link.active {
+            background: var(--secondary-blue);
+            color: white;
+        }
+        
+        .nav-tabs .nav-link:hover {
+            background: var(--primary-blue);
+            color: var(--dark-teal);
+        }
+        
+        .alert-success {
+            background: var(--light-green);
+            border-color: var(--secondary-blue);
+            color: var(--dark-teal);
+            border-radius: 10px;
+        }
+        
+        .footer-info {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+            text-align: center;
+            color: var(--dark-teal);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-graduation-cap me-2"></i>
+                Sistem Ujian Universitas
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="#" onclick="showSchedule()">
+                    <i class="fas fa-calendar-alt me-1"></i>
+                    Jadwal Ujian
+                </a>
+                <a class="nav-link" href="#" id="userInfo">
+                    <i class="fas fa-user me-1"></i>
+                    Mahasiswa
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid main-content" style="margin-top: 70px;">
+        <!-- Schedule View -->
+        <div id="scheduleView" class="container">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <h1 class="text-center mb-4" style="color: var(--dark-teal); font-weight: bold;">
+                        <i class="fas fa-calendar-check me-3"></i>
+                        Jadwal Ujian Tengah Semester & Ujian Akhir Semester
+                    </h1>
+                </div>
+            </div>
+            
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-tabs justify-content-center mb-4">
+                <li class="nav-item">
+                    <button class="nav-link active" onclick="showUTS()">
+                        <i class="fas fa-clipboard-list me-2"></i>
+                        Ujian Tengah Semester (Juli 2025)
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" onclick="showUAS()">
+                        <i class="fas fa-file-alt me-2"></i>
+                        Ujian Akhir Semester (Agustus 2025)
+                    </button>
+                </li>
+            </ul>
+
+            <!-- UTS Schedule -->
+            <div id="utsSchedule" class="row">
+                <div class="col-12">
+                    <div class="card schedule-table">
+                        <div class="card-header">
+                            <i class="fas fa-calendar-week me-2"></i>
+                            Jadwal Ujian Tengah Semester - Juli 2025
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Hari</th>
+                                            <th>Mata Kuliah</th>
+                                            <th>Waktu</th>
+                                            <th>Ruangan/Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Senin<br>7 Juli 2025</strong></td>
+                                            <td>
+                                                <div class="subject-name">Aljabar Linear</div>
+                                                <div class="exam-time">Teori & Praktik</div>
+                                            </td>
+                                            <td>08:00 - 10:00</td>
+                                            <td>Ruang 201</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Selasa<br>8 Juli 2025</strong></td>
+                                            <td>
+                                                <div class="subject-name">Riset Operasi</div>
+                                                <div class="exam-time">Online Examination</div>
+                                                <span class="online-badge" onclick="openExamDashboard('Riset Operasi', 'UTS')">
+                                                    <i class="fas fa-laptop me-1"></i>Ujian Online
+                                                </span>
+                                            </td>
+                                            <td>10:00 - 12:00</td>
+                                            <td>Dashboard Online</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Rabu<br>9 Juli 2025</strong></td>
+                                            <td>
+                                                <div class="subject-name">Algoritma</div>
+                                                <div class="exam-time">Programming Test</div>
+                                            </td>
+                                            <td>13:00 - 15:00</td>
+                                            <td>Lab Komputer 1</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Kamis<br>10 Juli 2025</strong></td>
+                                            <td>
+                                                <div class="subject-name">Pemrograman</div>
+                                                <div class="exam-time">Online Coding Test</div>
+                                                <span class="online-badge" onclick="openExamDashboard('Pemrograman', 'UTS')">
+                                                    <i class="fas fa-code me-1"></i>Ujian Online
+                                                </span>
+                                            </td>
+                                            <td>08:00 - 10:00</td>
+                                            <td>Dashboard Online</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Jumat<br>11 Juli 2025</strong></td>
+                                            <td>
+                                                <div class="subject-name">Fotografi</div>
+                                                <div class="exam-time">Portfolio Submission</div>
+                                            </td>
+                                            <td>10:00 - 12:00</td>
+                                            <td>Studio Foto</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Senin<br>14 Juli 2025</strong></td>
+                                            <td>
+                                                <div class="subject-name">Pendidikan Agama</div>
+                                                <div class="exam-time">Online Essay</div>
+                                                <span class="online-badge" onclick="openExamDashboard('Pendidikan Agama', 'UTS')">
+                                                    <i class="fas fa-pen me-1"></i>Ujian Online
+                                                </span>
+                                            </td>
+                                            <td>13:00 - 15:00</td>
+                                            <td>Dashboard Online</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Selasa<br>15 Juli 2025</strong></td>
+                                            <td>
+                                                <div class="subject-name">Pendidikan Kewarganegaraan</div>
+                                                <div class="exam-time">Written Test</div>
+                                            </td>
+                                            <td>08:00 - 10:00</td>
+                                            <td>Ruang 105</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Rabu<br>16 Juli 2025</strong></td>
+                                            <td>
+                                                <div class="subject-name">Multimedia</div>
+                                                <div class="exam-time">Project Based Assessment</div>
+                                            </td>
+                                            <td>10:00 - 12:00</td>
+                                            <td>Lab Multimedia</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Kamis<br>17 Juli 2025</strong></td>
+                                            <td>
+                                                <div class="subject-name">Analisis Desain</div>
+                                                <div class="exam-time">Online Portfolio Review</div>
+                                                <span class="online-badge" onclick="openExamDashboard('Analisis Desain', 'UTS')">
+                                                    <i class="fas fa-palette me-1"></i>Ujian Online
+                                                </span>
+                                            </td>
+                                            <td>13:00 - 15:00</td>
+                                            <td>Dashboard Online</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UAS Schedule -->
+            <div id="uasSchedule" class="row" style="display: none;">
+                <div class="col-12">
+                    <div class="card schedule-table">
+                        <div class="card-header">
+                            <i class="fas fa-calendar-week me-2"></i>
+                            Jadwal Ujian Akhir Semester - Agustus 2025
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Hari</th>
+                                            <th>Mata Kuliah</th>
+                                            <th>Waktu</th>
+                                            <th>Ruangan/Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Senin<br>4 Agustus 2025</strong></td>
+                                            <td>
+                                                <div class="subject-name">Aljabar Linear</div>
+                                                <div class="exam-time">Comprehensive Exam</div>
+                                            </td>
+                                            <td>08:00 - 11:00</td>
+                                            <td>Ruang 201</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Selasa<br>5 Agustus 2025</strong></td>
+                                            <td>
+                                                <div class="subject-name">Riset Operasi</div>
+                                                <div class="exam-time">Final Online Exam</div>
+                                                <span class="online-badge" onclick="openExamDashboard('Riset Operasi', 'UAS')">
+                                                    <i class="fas fa-laptop me-1"></i>Ujian Online
+                                                </span>
+                                            </td>
+                                            <td>10:00 - 13:00</td>
+                                            <td>Dashboard Online</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Rabu<br>6 Agustus 2025</strong></td>
+                                            <td>
+                                                <div class="subject-name">Algoritma</div>
+                                                <div class="exam-time">Final Programming</div>
+                                            </td>
+                                            <td>13:00 - 16:00</td>
+                                            <td>Lab Komputer 1</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Kamis<br>7 Agustus 2025</strong></td>
+                                            <td>
+                                                <div class="subject-name">Pemrograman</div>
+                                                <div class="exam-time">Final Project Online</div>
+                                                <span class="online-badge" onclick="openExamDashboard('Pemrograman', 'UAS')">
+                                                    <i class="fas fa-code me-1"></i>Ujian Online
+                                                </span>
+                                            </td>
+                                            <td>08:00 - 11:00</td>
+                                            <td>Dashboard Online</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Jumat<br>8 Agustus 2025</strong></td>
+                                            <td>
+                                                <div class="subject-name">Fotografi</div>
+                                                <div class="exam-time">Final Exhibition</div>
+                                            </td>
+                                            <td>10:00 - 13:00</td>
+                                            <td>Galeri Seni</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Senin<br>11 Agustus 2025</strong></td>
+                                            <td>
+                                                <div class="subject-name">Pendidikan Agama</div>
+                                                <div class="exam-time">Final Online Essay</div>
+                                                <span class="online-badge" onclick="openExamDashboard('Pendidikan Agama', 'UAS')">
+                                                    <i class="fas fa-pen me-1"></i>Ujian Online
+                                                </span>
+                                            </td>
+                                            <td>13:00 - 16:00</td>
+                                            <td>Dashboard Online</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Selasa<br>12 Agustus 2025</strong></td>
+                                            <td>
+                                                <div class="subject-name">Pendidikan Kewarganegaraan</div>
+                                                <div class="exam-time">Comprehensive Test</div>
+                                            </td>
+                                            <td>08:00 - 11:00</td>
+                                            <td>Ruang 105</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Rabu<br>13 Agustus 2025</strong></td>
+                                            <td>
+                                                <div class="subject-name">Multimedia</div>
+                                                <div class="exam-time">Final Project Defense</div>
+                                            </td>
+                                            <td>10:00 - 13:00</td>
+                                            <td>Lab Multimedia</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Kamis<br>14 Agustus 2025</strong></td>
+                                            <td>
+                                                <div class="subject-name">Analisis Desain</div>
+                                                <div class="exam-time">Final Online Presentation</div>
+                                                <span class="online-badge" onclick="openExamDashboard('Analisis Desain', 'UAS')">
+                                                    <i class="fas fa-palette me-1"></i>Ujian Online
+                                                </span>
+                                            </td>
+                                            <td>13:00 - 16:00</td>
+                                            <td>Dashboard Online</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-info">
+                <p><strong>Catatan Penting:</strong></p>
+                <p>• Mata kuliah dengan badge "Ujian Online" dapat diakses melalui dashboard online</p>
+                <p>• Pastikan koneksi internet stabil untuk ujian online</p>
+                <p>• Hubungi bagian akademik untuk informasi lebih lanjut</p>
+            </div>
+        </div>
+
+        <!-- Exam Dashboard -->
+        <div id="examDashboard" class="container dashboard">
+            <div class="row">
+                <div class="col-12">
+                    <div class="dashboard-header">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h2 id="examTitle">Dashboard Ujian Online</h2>
+                                <p id="examSubject" class="mb-0">Mata Kuliah: -</p>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                <button class="btn btn-light" onclick="showSchedule()">
+                                    <i class="fas fa-arrow-left me-2"></i>Kembali ke Jadwal
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4">
+                        <div class="exam-info">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5><i class="fas fa-info-circle me-2"></i>Informasi Ujian</h5>
+                                    <p><strong>Durasi:</strong> <span id="examDuration">120 menit</span></p>
+                                    <p><strong>Jumlah Soal:</strong> <span id="totalQuestions">25 soal</span></p>
+                                    <p><strong>Tipe:</strong> <span id="examType">Pilihan Ganda & Essay</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="timer">
+                                        <div><i class="fas fa-clock me-2"></i>Sisa Waktu</div>
+                                        <div id="countdown">02:00:00</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6>Progress Pengerjaan</h6>
+                                <span id="progressText">0/25 soal</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Sample Questions -->
+                        <div id="questionsContainer">
+                            <!-- Question 1 - Multiple Choice -->
+                            <div class="question-card">
+                                <div class="question-number">1</div>
+                                <h6>Pilihan Ganda</h6>
+                                <p><strong>Dalam aljabar linear, determinan dari matriks 2x2 berikut adalah:</strong></p>
+                                <p>|2  3|<br>|1  4|</p>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="q1" id="q1a" value="5" onchange="updateProgress()">
+                                    <label class="form-check-label" for="q1a">5</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="q1" id="q1b" value="8" onchange="updateProgress()">
+                                    <label class="form-check-label" for="q1b">8</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="q1" id="q1c" value="11" onchange="updateProgress()">
+                                    <label class="form-check-label" for="q1c">11</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="q1" id="q1d" value="-5" onchange="updateProgress()">
+                                    <label class="form-check-label" for="q1d">-5</label>
+                                </div>
+                            </div>
+
+                            <!-- Question 2 - Multiple Choice -->
+                            <div class="question-card">
+                                <div class="question-number">2</div>
+                                <h6>Pilihan Ganda</h6>
+                                <p><strong>Metode simpleks dalam riset operasi digunakan untuk:</strong></p>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="q2" id="q2a" value="optimasi" onchange="updateProgress()">
+                                    <label class="form-check-label" for="q2a">Optimasi linear programming</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="q2" id="q2b" value="statistik" onchange="updateProgress()">
+                                    <label class="form-check-label" for="q2b">Analisis statistik</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="q2" id="q2c" value="algoritma" onchange="updateProgress()">
+                                    <label class="form-check-label" for="q2c">Sorting algoritma</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="q2" id="q2d" value="database" onchange="updateProgress()">
+                                    <label class="form-check-label" for="q2d">Database management</label>
+                                </div>
+                            </div>
+
+                            <!-- Question 3 - Essay -->
+                            <div class="question-card">
+                                <div class="question-number">3</div>
+                                <h6>Essay</h6>
+                                <p><strong>Jelaskan konsep Big O notation dalam analisis kompleksitas algoritma dan berikan contoh minimal 2 algoritma dengan kompleksitas yang berbeda!</strong></p>
+                                <textarea class="form-control" rows="6" placeholder="Tulis jawaban Anda di sini..." onchange="updateProgress()" id="q3essay" name="q3"></textarea>
+                            </div>
+
+                            <!-- Question 4 - Code -->
+                            <div class="question-card">
+                                <div class="question-number">4</div>
+                                <h6>Programming</h6>
+                                <p><strong>Buatlah fungsi JavaScript untuk mencari nilai maksimum dalam array:</strong></p>
+                                <textarea class="form-control" rows="8" placeholder="// Tulis kode JavaScript di sini
+function findMax(arr) {
+    // kode Anda
+}" onchange="updateProgress()" id="q4code" name="q4" style="font-family: 'Courier New', monospace;"></textarea>
+                            </div>
+
+                            <!-- Question 5 - Multiple Choice -->
+                            <div class="question-card">
+                                <div class="question-number">5</div>
+                                <h6>Pilihan Ganda</h6>
+                                <p><strong>Dalam fotografi, aperture f/2.8 menghasilkan:</strong></p>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="q5" id="q5a" value="shallow" onchange="updateProgress()">
+                                    <label class="form-check-label" for="q5a">Depth of field yang dangkal</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="q5" id="q5b" value="deep" onchange="updateProgress()">
+                                    <label class="form-check-label" for="q5b">Depth of field yang dalam</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="q5" id="q5c" value="normal" onchange="updateProgress()">
+                                    <label class="form-check-label" for="q5c">Depth of field normal</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="q5" id="q5d" value="tidak_berpengaruh" onchange="updateProgress()">
+                                    <label class="form-check-label" for="q5d">Tidak berpengaruh pada depth of field</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button class="btn btn-secondary me-3" onclick="saveAnswers()">
+                                <i class="fas fa-save me-2"></i>Simpan Jawaban
+                            </button>
+                            <button class="btn btn-primary" onclick="submitExam()">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Ujian
+                            </button>
+                        </div>
+
+                        <div id="submitResult" class="alert alert-success mt-4" style="display: none;">
+                            <h5><i class="fas fa-check-circle me-2"></i>Ujian Berhasil Disubmit!</h5>
+                            <p>Terima kasih telah mengerjakan ujian. Hasil akan diumumkan setelah periode koreksi selesai.</p>
+                            <p><strong>Detail Submission:</strong></p>
+                            <ul>
+                                <li>Waktu Submit: <span id="submitTime"></span></li>
+                                <li>Total Soal Terjawab: <span id="answeredCount">0</span>/5</li>
+                                <li>Status: Berhasil Tersimpan</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Global variables
+        let currentExam = {
+            subject: '',
+            type: '',
+            timeLimit: 120, // minutes
+            totalQuestions: 5,
+            answeredQuestions: 0
+        };
+        
+        let examTimer;
+        let timeRemaining = 7200; // 2 hours in seconds
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            showSchedule();
+        });
+
+        // Navigation functions
+        function showSchedule() {
+            document.getElementById('scheduleView').style.display = 'block';
+            document.getElementById('examDashboard').style.display = 'none';
+            if (examTimer) {
+                clearInterval(examTimer);
+            }
+        }
+
+        function showUTS() {
+            document.getElementById('utsSchedule').style.display = 'block';
+            document.getElementById('uasSchedule').style.display = 'none';
+            
+            // Update active tab
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function showUAS() {
+            document.getElementById('utsSchedule').style.display = 'none';
+            document.getElementById('uasSchedule').style.display = 'block';
+            
+            // Update active tab
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Exam dashboard functions
+        function openExamDashboard(subject, examType) {
+            // Set exam details
+            currentExam.subject = subject;
+            currentExam.type = examType;
+            
+            // Update dashboard content
+            document.getElementById('examTitle').textContent = `Dashboard Ujian ${examType} Online`;
+            document.getElementById('examSubject').textContent = `Mata Kuliah: ${subject}`;
+            
+            // Set specific exam parameters based on subject
+            setExamParameters(subject, examType);
+            
+            // Show dashboard
+            document.getElementById('scheduleView').style.display = 'none';
+            document.getElementById('examDashboard').style.display = 'block';
+            
+            // Start timer
+            startExamTimer();
+            
+            // Reset progress
+            resetProgress();
+        }
+
+        function setExamParameters(subject, examType) {
+            let duration, questions, type;
+            
+            switch(subject) {
+                case 'Riset Operasi':
+                    duration = examType === 'UTS' ? '120 menit' : '180 menit';
+                    questions = examType === 'UTS' ? '25 soal' : '30 soal';
+                    type = 'Pilihan Ganda & Essay';
+                    timeRemaining = examType === 'UTS' ? 7200 : 10800;
+                    break;
+                case 'Pemrograman':
+                    duration = examType === 'UTS' ? '120 menit' : '180 menit';
+                    questions = examType === 'UTS' ? '20 soal' : '25 soal';
+                    type = 'Coding & Multiple Choice';
+                    timeRemaining = examType === 'UTS' ? 7200 : 10800;
+                    break;
+                case 'Pendidikan Agama':
+                    duration = examType === 'UTS' ? '120 menit' : '180 menit';
+                    questions = examType === 'UTS' ? '15 soal' : '20 soal';
+                    type = 'Essay & Pilihan Ganda';
+                    timeRemaining = examType === 'UTS' ? 7200 : 10800;
+                    break;
+                case 'Analisis Desain':
+                    duration = examType === 'UTS' ? '120 menit' : '180 menit';
+                    questions = examType === 'UTS' ? '10 soal' : '15 soal';
+                    type = 'Portfolio & Presentasi';
+                    timeRemaining = examType === 'UTS' ? 7200 : 10800;
+                    break;
+                default:
+                    duration = '120 menit';
+                    questions = '25 soal';
+                    type = 'Mixed';
+                    timeRemaining = 7200;
+            }
+            
+            document.getElementById('examDuration').textContent = duration;
+            document.getElementById('totalQuestions').textContent = questions;
+            document.getElementById('examType').textContent = type;
+        }
+
+        function startExamTimer() {
+            if (examTimer) {
+                clearInterval(examTimer);
+            }
+            
+            examTimer = setInterval(function() {
+                timeRemaining--;
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(examTimer);
+                    autoSubmitExam();
+                    return;
+                }
+                
+                // Update countdown display
+                const hours = Math.floor(timeRemaining / 3600);
+                const minutes = Math.floor((timeRemaining % 3600) / 60);
+                const seconds = timeRemaining % 60;
+                
+                const timeString = 
+                    String(hours).padStart(2, '0') + ':' +
+                    String(minutes).padStart(2, '0') + ':' +
+                    String(seconds).padStart(2, '0');
+                
+                document.getElementById('countdown').textContent = timeString;
+                
+                // Change color when time is running out
+                const timerElement = document.querySelector('.timer');
+                if (timeRemaining <= 300) { // 5 minutes
+                    timerElement.style.background = '#dc3545';
+                } else if (timeRemaining <= 600) { // 10 minutes
+                    timerElement.style.background = '#fd7e14';
+                }
+            }, 1000);
+        }
+
+        function updateProgress() {
+            // Count answered questions
+            let answered = 0;
+            const totalQuestions = 5; // For demo purposes
+            
+            // Check radio buttons
+            for (let i = 1; i <= 5; i++) {
+                const radioName = `q${i}`;
+                const radios = document.getElementsByName(radioName);
+                for (let radio of radios) {
+                    if (radio.checked) {
+                        answered++;
+                        break;
+                    }
+                }
+            }
+            
+            // Check textareas
+            const essay = document.getElementById('q3essay');
+            if (essay && essay.value.trim().length > 0) {
+                // Already counted in radio check above for q3
+            }
+            
+            const code = document.getElementById('q4code');
+            if (code && code.value.trim().length > 0) {
+                // Already counted in radio check above for q4
+            }
+            
+            currentExam.answeredQuestions = answered;
+            
+            // Update progress bar
+            const percentage = (answered / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = `${answered}/${totalQuestions} soal`;
+        }
+
+        function resetProgress() {
+            currentExam.answeredQuestions = 0;
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('progressText').textContent = '0/5 soal';
+            document.getElementById('submitResult').style.display = 'none';
+        }
+
+        function saveAnswers() {
+            // Simulate saving answers
+            const saveButton = event.target;
+            const originalText = saveButton.innerHTML;
+            
+            saveButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Menyimpan...';
+            saveButton.disabled = true;
+            
+            setTimeout(function() {
+                saveButton.innerHTML = '<i class="fas fa-check me-2"></i>Tersimpan';
+                saveButton.classList.remove('btn-secondary');
+                saveButton.classList.add('btn-success');
+                
+                setTimeout(function() {
+                    saveButton.innerHTML = originalText;
+                    saveButton.classList.remove('btn-success');
+                    saveButton.classList.add('btn-secondary');
+                    saveButton.disabled = false;
+                }, 2000);
+            }, 1500);
+        }
+
+        function submitExam() {
+            // Show confirmation dialog
+            if (!confirm('Apakah Anda yakin ingin mengsubmit ujian? Jawaban tidak dapat diubah setelah disubmit.')) {
+                return;
+            }
+            
+            // Stop timer
+            if (examTimer) {
+                clearInterval(examTimer);
+            }
+            
+            // Collect answers
+            const answers = collectAnswers();
+            
+            // Show loading state
+            const submitButton = event.target;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Memproses...';
+            submitButton.disabled = true;
+            
+            // Simulate submission process
+            setTimeout(function() {
+                // Show success message
+                const resultDiv = document.getElementById('submitResult');
+                const now = new Date();
+                document.getElementById('submitTime').textContent = now.toLocaleString('id-ID');
+                document.getElementById('answeredCount').textContent = currentExam.answeredQuestions;
+                
+                resultDiv.style.display = 'block';
+                resultDiv.scrollIntoView({ behavior: 'smooth' });
+                
+                // Disable all form elements
+                disableAllInputs();
+                
+                submitButton.innerHTML = '<i class="fas fa-check me-2"></i>Sudah Disubmit';
+                submitButton.classList.remove('btn-primary');
+                submitButton.classList.add('btn-success');
+            }, 2000);
+        }
+
+        function autoSubmitExam() {
+            alert('Waktu ujian telah habis. Ujian akan disubmit otomatis.');
+            submitExam();
+        }
+
+        function collectAnswers() {
+            const answers = {};
+            
+            // Collect multiple choice answers
+            for (let i = 1; i <= 5; i++) {
+                const radioName = `q${i}`;
+                const radios = document.getElementsByName(radioName);
+                for (let radio of radios) {
+                    if (radio.checked) {
+                        answers[radioName] = radio.value;
+                        break;
+                    }
+                }
+            }
+            
+            // Collect essay answers
+            const essay = document.getElementById('q3essay');
+            if (essay) {
+                answers.q3 = essay.value;
+            }
+            
+            const code = document.getElementById('q4code');
+            if (code) {
+                answers.q4 = code.value;
+            }
+            
+            return answers;
+        }
+
+        function disableAllInputs() {
+            // Disable all radio buttons
+            const radios = document.querySelectorAll('input[type="radio"]');
+            radios.forEach(radio => radio.disabled = true);
+            
+            // Disable all textareas
+            const textareas = document.querySelectorAll('textarea');
+            textareas.forEach(textarea => textarea.disabled = true);
+            
+            // Disable save button
+            const saveButton = document.querySelector('button[onclick="saveAnswers()"]');
+            if (saveButton) {
+                saveButton.disabled = true;
+                saveButton.innerHTML = '<i class="fas fa-lock me-2"></i>Dikunci';
+            }
+        }
+
+        // Add smooth scrolling for better UX
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+S to save answers
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                if (document.getElementById('examDashboard').style.display !== 'none') {
+                    saveAnswers();
+                }
+            }
+            
+            // Escape to go back to schedule
+            if (e.key === 'Escape') {
+                if (document.getElementById('examDashboard').style.display !== 'none') {
+                    if (confirm('Apakah Anda yakin ingin kembali ke jadwal? Progress akan tersimpan otomatis.')) {
+                        showSchedule();
+                    }
+                }
+            }
+        });
+
+        // Prevent accidental page refresh during exam
+        window.addEventListener('beforeunload', function(e) {
+            if (document.getElementById('examDashboard').style.display !== 'none') {
+                e.preventDefault();
+                e.returnValue = 'Ujian sedang berlangsung. Yakin ingin meninggalkan halaman?';
+                return e.returnValue;
+            }
+        });
+
+        // Auto-save functionality
+        let autoSaveTimer;
+        function startAutoSave() {
+            if (autoSaveTimer) {
+                clearInterval(autoSaveTimer);
+            }
+            
+            autoSaveTimer = setInterval(function() {
+                if (document.getElementById('examDashboard').style.display !== 'none') {
+                    // Auto-save answers silently
+                    const answers = collectAnswers();
+                    // In real implementation, this would send data to server
+                    console.log('Auto-saved:', answers);
+                }
+            }, 60000); // Auto-save every minute
+        }
+
+        // Start auto-save when exam dashboard is shown
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                    if (document.getElementById('examDashboard').style.display !== 'none') {
+                        startAutoSave();
+                    }
+                }
+            });
+        });
+
+        observer.observe(document.getElementById('examDashboard'), {
+            attributes: true,
+            attributeFilter: ['style']
+        });
+    </script>
+</body>
+</html>
