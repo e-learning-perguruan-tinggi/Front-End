@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Manajemen Soal - Aljabar Linear & Matriks</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            margin: 20px;
+            min-height: calc(100vh - 40px);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+        }
+        
+        .nav-pills .nav-link {
+            border-radius: 25px;
+            margin: 0 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-pills .nav-link.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 25px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            border: none;
+            border-radius: 25px;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            border-radius: 25px;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ff4757 0%, #ff3838 100%);
+            border: none;
+            border-radius: 25px;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 15px;
+            border: 2px solid #e3e6f0;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .question-card {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e6f3ff 100%);
+            border-left: 5px solid #667eea;
+        }
+        
+        .option-input {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            transition: all 0.3s ease;
+        }
+        
+        .option-input:focus {
+            border-color: #667eea;
+            border-style: solid;
+        }
+        
+        .student-rank {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+            color: #2d3436;
+            border-radius: 15px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+        }
+        
+        .rank-badge {
+            background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .formula-display {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-line;
+        }
+        
+        .tab-content {
+            padding: 2rem;
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header">
+            <h1><i class="fas fa-calculator"></i> Sistem Manajemen Soal</h1>
+            <h4>Aljabar Linear & Matriks</h4>
+            <p class="mb-0">Dashboard Dosen - Kelola Soal dan Pantau Nilai Mahasiswa</p>
+        </div>
+        
+        <div class="container-fluid">
+            <ul class="nav nav-pills justify-content-center mt-4" id="mainTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="questions-tab" data-bs-toggle="pill" data-bs-target="#questions" type="button" role="tab">
+                        <i class="fas fa-question-circle"></i> Kelola Soal
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="add-question-tab" data-bs-toggle="pill" data-bs-target="#add-question" type="button" role="tab">
+                        <i class="fas fa-plus-circle"></i> Tambah Soal
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="rankings-tab" data-bs-toggle="pill" data-bs-target="#rankings" type="button" role="tab">
+                        <i class="fas fa-trophy"></i> Peringkat Mahasiswa
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="statistics-tab" data-bs-toggle="pill" data-bs-target="#statistics" type="button" role="tab">
+                        <i class="fas fa-chart-bar"></i> Statistik
+                    </button>
+                </li>
+            </ul>
+            
+            <div class="tab-content" id="mainTabContent">
+                <!-- Tab Kelola Soal -->
+                <div class="tab-pane fade show active animate-fade-in" id="questions" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3><i class="fas fa-clipboard-list"></i> Daftar Soal</h3>
+                        <div>
+                            <span class="badge bg-info fs-6">Total Soal: <span id="totalQuestions">0</span></span>
+                        </div>
+                    </div>
+                    
+                    <div class="row" id="questionsList">
+                        <!-- Soal akan dimuat di sini -->
+                    </div>
+                </div>
+                
+                <!-- Tab Tambah Soal -->
+                <div class="tab-pane fade animate-fade-in" id="add-question" role="tabpanel">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title"><i class="fas fa-plus-circle"></i> <span id="formTitle">Tambah Soal Baru</span></h3>
+                            <form id="questionForm">
+                                <input type="hidden" id="editingId" value="">
+                                
+                                <div class="mb-3">
+                                    <label for="questionText" class="form-label">Pertanyaan</label>
+                                    <textarea class="form-control" id="questionText" rows="3" required placeholder="Masukkan pertanyaan..."></textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="questionFormula" class="form-label">Formula/Rumus (Opsional)</label>
+                                    <textarea class="form-control" id="questionFormula" rows="3" placeholder="Masukkan formula atau rumus jika ada..."></textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Pilihan Jawaban</label>
+                                    <div id="optionsContainer">
+                                        <div class="input-group mb-2">
+                                            <span class="input-group-text">A</span>
+                                            <input type="text" class="form-control option-input" placeholder="Pilihan A" required>
+                                            <div class="input-group-text">
+                                                <input class="form-check-input mt-0" type="radio" name="correctAnswer" value="0" required>
+                                            </div>
+                                        </div>
+                                        <div class="input-group mb-2">
+                                            <span class="input-group-text">B</span>
+                                            <input type="text" class="form-control option-input" placeholder="Pilihan B" required>
+                                            <div class="input-group-text">
+                                                <input class="form-check-input mt-0" type="radio" name="correctAnswer" value="1" required>
+                                            </div>
+                                        </div>
+                                        <div class="input-group mb-2">
+                                            <span class="input-group-text">C</span>
+                                            <input type="text" class="form-control option-input" placeholder="Pilihan C" required>
+                                            <div class="input-group-text">
+                                                <input class="form-check-input mt-0" type="radio" name="correctAnswer" value="2" required>
+                                            </div>
+                                        </div>
+                                        <div class="input-group mb-2">
+                                            <span class="input-group-text">D</span>
+                                            <input type="text" class="form-control option-input" placeholder="Pilihan D" required>
+                                            <div class="input-group-text">
+                                                <input class="form-check-input mt-0" type="radio" name="correctAnswer" value="3" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-muted">Pilih jawaban yang benar dengan menandai radio button</small>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="questionExplanation" class="form-label">Penjelasan</label>
+                                    <textarea class="form-control" id="questionExplanation" rows="3" required placeholder="Masukkan penjelasan untuk jawaban yang benar..."></textarea>
+                                </div>
+                                
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> <span id="submitButtonText">Simpan Soal</span>
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                                        <i class="fas fa-times"></i> Batal
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tab Peringkat Mahasiswa -->
+                <div class="tab-pane fade animate-fade-in" id="rankings" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3><i class="fas fa-trophy"></i> Peringkat Mahasiswa</h3>
+                        <button class="btn btn-success" onclick="generateSampleRankings()">
+                            <i class="fas fa-users"></i> Generate Data Sample
+                        </button>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div id="rankingsList">
+                                        <div class="text-center text-muted">
+                                            <i class="fas fa-users fa-3x mb-3"></i>
+                                            <p>Belum ada data peringkat mahasiswa</p>
+                                            <small>Klik "Generate Data Sample" untuk melihat contoh data</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tab Statistik -->
+                <div class="tab-pane fade animate-fade-in" id="statistics" role="tabpanel">
+                    <h3><i class="fas fa-chart-bar"></i> Statistik Soal dan Mahasiswa</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="stats-card">
+                                <h4 id="statsQuestions">0</h4>
+                                <p>Total Soal</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-card">
+                                <h4 id="statsStudents">0</h4>
+                                <p>Total Mahasiswa</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-card">
+                                <h4 id="statsAvgScore">0</h4>
+                                <p>Nilai Rata-rata</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stats-card">
+                                <h4 id="statsHighestScore">0</h4>
+                                <p>Nilai Tertinggi</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit Soal -->
+    <div class="modal fade" id="editQuestionModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Soal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editQuestionForm">
+                        <input type="hidden" id="editQuestionId">
+                        
+                        <div class="mb-3">
+                            <label for="editQuestionText" class="form-label">Pertanyaan</label>
+                            <textarea class="form-control" id="editQuestionText" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="editQuestionFormula" class="form-label">Formula/Rumus (Opsional)</label>
+                            <textarea class="form-control" id="editQuestionFormula" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Pilihan Jawaban</label>
+                            <div id="editOptionsContainer">
+                                <div class="input-group mb-2">
+                                    <span class="input-group-text">A</span>
+                                    <input type="text" class="form-control" id="editOption0" required>
+                                    <div class="input-group-text">
+                                        <input class="form-check-input mt-0" type="radio" name="editCorrectAnswer" value="0" required>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <span class="input-group-text">B</span>
+                                    <input type="text" class="form-control" id="editOption1" required>
+                                    <div class="input-group-text">
+                                        <input class="form-check-input mt-0" type="radio" name="editCorrectAnswer" value="1" required>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <span class="input-group-text">C</span>
+                                    <input type="text" class="form-control" id="editOption2" required>
+                                    <div class="input-group-text">
+                                        <input class="form-check-input mt-0" type="radio" name="editCorrectAnswer" value="2" required>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-2">
+                                    <span class="input-group-text">D</span>
+                                    <input type="text" class="form-control" id="editOption3" required>
+                                    <div class="input-group-text">
+                                        <input class="form-check-input mt-0" type="radio" name="editCorrectAnswer" value="3" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="editQuestionExplanation" class="form-label">Penjelasan</label>
+                            <textarea class="form-control" id="editQuestionExplanation" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Simpan Perubahan
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="fas fa-times"></i> Batal
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Database soal (menggunakan data dari file yang diberikan)
+        let questions = [
+            {
+                id: 1,
+                question: "Apa yang dimaksud dengan matriks identitas?",
+                options: [
+                    "Matriks yang semua elemennya bernilai 1",
+                    "Matriks persegi yang elemen diagonal utamanya 1 dan elemen lainnya 0",
+                    "Matriks yang determinannya sama dengan 1",
+                    "Matriks yang tidak dapat diinvers"
+                ],
+                correctAnswer: 1,
+                explanation: "Matriks identitas adalah matriks persegi dimana elemen diagonal utama bernilai 1 dan semua elemen lainnya bernilai 0."
+            },
+            {
+                id: 2,
+                question: "Jika A adalah matriks 3×2 dan B adalah matriks 2×4, maka hasil perkalian A×B menghasilkan matriks berukuran:",
+                options: [
+                    "3×4",
+                    "2×2", 
+                    "3×2",
+                    "Tidak dapat dikalikan"
+                ],
+                correctAnswer: 0,
+                explanation: "Perkalian matriks A(m×n) × B(p×q) hanya bisa dilakukan jika n = p, dan hasilnya berukuran m×q. Jadi 3×2 × 2×4 = 3×4."
+            },
+            {
+                id: 3,
+                question: "Determinan dari matriks 2×2 berikut ini adalah:",
+                formula: "A = [2  3]\n    [1  4]",
+                options: [
+                    "5",
+                    "8", 
+                    "11",
+                    "14"
+                ],
+                correctAnswer: 0,
+                explanation: "Determinan matriks 2×2 = ad - bc = (2×4) - (3×1) = 8 - 3 = 5."
+            },
+            {
+                id: 4,
+                question: "Suatu sistem persamaan linear homogen selalu memiliki:",
+                options: [
+                    "Solusi tunggal",
+                    "Tidak ada solusi",
+                    "Solusi trivial (x = 0)",
+                    "Solusi tak hingga"
+                ],
+                correctAnswer: 2,
+                explanation: "Sistem persamaan linear homogen (Ax = 0) selalu memiliki solusi trivial x = 0, dan mungkin memiliki solusi non-trivial lainnya."
+            },
+            {
+                id: 5,
+                question: "Vektor-vektor berikut yang membentuk basis untuk R² adalah:",
+                options: [
+                    "(1,2) dan (2,4)",
+                    "(1,0) dan (0,1)",
+                    "(3,6) dan (1,2)",
+                    "(0,0) dan (1,1)"
+                ],
+                correctAnswer: 1,
+                explanation: "Basis untuk R² harus terdiri dari 2 vektor yang linear independen. (1,0) dan (0,1) adalah basis standar untuk R²."
+            },
+            {
+                id: 6,
+                question: "Rank dari matriks adalah:",
+                options: [
+                    "Jumlah baris matriks",
+                    "Jumlah kolom matriks",
+                    "Jumlah maksimum baris atau kolom yang linear independen",
+                    "Determinan matriks"
+                ],
+                correctAnswer: 2,
+                explanation: "Rank matriks adalah jumlah maksimum baris (atau kolom) yang linear independen dalam matriks tersebut."
+            },
+            {
+                id: 7,
+                question: "Matriks A dapat diinvers jika dan hanya jika:",
+                options: [
+                    "A adalah matriks persegi",
+                    "det(A) ≠ 0",
+                    "A adalah matriks diagonal",
+                    "Semua elemen A positif"
+                ],
+                correctAnswer: 1,
+                explanation: "Matriks dapat diinvers jika dan hanya jika determinannya tidak sama dengan nol (det(A) ≠ 0)."
+            },
+            {
+                id: 8,
+                question: "Dalam transformasi linear T: R² → R², jika T(1,0) = (2,3) dan T(0,1) = (1,4), maka T(2,3) adalah:",
+                options: [
+                    "(7,18)",
+                    "(5,12)",
+                    "(4,9)",
+                    "(3,7)"
+                ],
+                correctAnswer: 0,
+                explanation: "T(2,3) = 2×T(1,0) + 3×T(0,1) = 2×(2,3) + 3×(1,4) = (4,6) + (3,12) = (7,18)."
+            }
+        ];
+        
+        // Data mahasiswa (sample)
+        let studentRankings = [];
+        
+        let nextQuestionId = 9;
+        
+        // Fungsi untuk memuat daftar soal
+        function loadQuestions() {
+            const questionsList = document.getElementById('questionsList');
+            const totalQuestions = document.getElementById('totalQuestions');
+            
+            if (questions.length === 0) {
+                questionsList.innerHTML = `
+                    <div class="col-12">
+                        <div class="text-center text-muted py-5">
+                            <i class="fas fa-question-circle fa-3x mb-3"></i>
+                            <p>Belum ada soal yang tersedia</p>
+                            <button class="btn btn-primary" onclick="document.getElementById('add-question-tab').click()">
+                                <i class="fas fa-plus"></i> Tambah Soal Pertama
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                questionsList.innerHTML = '';
+                questions.forEach((question, index) => {
+                    const questionCard = `
+                        <div class="col-md-6 mb-4">
+                            <div class="card question-card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <h6 class="text-primary">Soal #${question.id}</h6>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#" onclick="editQuestion(${question.id})">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </a></li>
+                                                <li><a class="dropdown-item text-danger" href="#" onclick="deleteQuestion(${question.id})">
+                                                    <i class="fas fa-trash"></i> Hapus
+                                                </a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    
+                                    <p class="card-text"><strong>${question.question}</strong></p>
+                                    
+                                    ${question.formula ? `
+                                        <div class="formula-display mb-3">
+                                            ${question.formula}
+                                        </div>
+                                    ` : ''}
+                                    
+                                    <div class="options mb-3">
+                                        ${question.options.map((option, idx) => `
+                                            <div class="form-check ${idx === question.correctAnswer ? 'text-success fw-bold' : ''}">
+                                                <span class="badge ${idx === question.correctAnswer ? 'bg-success' : 'bg-light text-dark'} me-2">
+                                                    ${String.fromCharCode(65 + idx)}
+                                                </span>
+                                                ${option}
+                                                ${idx === question.correctAnswer ? '<i class="fas fa-check text-success ms-2"></i>' : ''}
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                    
+                                    <div class="explanation">
+                                        <small class="text-muted">
+                                            <strong>Penjelasan:</strong> ${question.explanation}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    questionsList.innerHTML += questionCard;
+                });
+            }
+            
+            totalQuestions.textContent = questions.length;
+            updateStatistics();
+        }
+        
+        // Fungsi untuk menambah/edit soal
+        document.getElementById('questionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const questionText = document.getElementById('questionText').value;
+            const questionFormula = document.getElementById('questionFormula').value;
+            const questionExplanation = document.getElementById('questionExplanation').value;
+            const options = Array.from(document.querySelectorAll('#optionsContainer input[type="text"]')).map(input => input.value);
+            const correctAnswer = parseInt(document.querySelector('input[name="correctAnswer"]:checked').value);
+            
+            const newQuestion = {
+                id: nextQuestionId++,
+                question: questionText,
+                formula: questionFormula || undefined,
+                options: options,
+                correctAnswer: correctAnswer,
+                explanation: questionExplanation
+            };
+            
+            questions.push(newQuestion);
+            loadQuestions();
+            resetForm();
+            
+            // Pindah ke tab kelola soal
+            document.getElementById('questions-tab').click();
+            
+            // Toast notifikasi
+            showToast('Soal berhasil ditambahkan!', 'success');
+        });
+        
+        // Fungsi untuk reset form
+        function resetForm() {
+            document.getElementById('questionForm').reset();
+            document.getElementById('formTitle').textContent = 'Tambah Soal Baru';
+            document.getElementById('submitButtonText').textContent = 'Simpan Soal';
+        }
+        
+        // Fungsi untuk edit soal
+        function editQuestion(id) {
+            const question = questions.find(q => q.id === id);
+            if (!question) return;
+            
+            document.getElementById('editQuestionId').value = question.id;
+            document.getElementById('editQuestionText').value = question.question;
+            document.getElementById('editQuestionFormula').value = question.formula || '';
+            document.getElementById('editQuestionExplanation').value = question.explanation;
+            
+            // Set options
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(`editOption${i}`).value = question.options[i];
+            }
+            
+            // Set correct answer
+            document.querySelector(`input[name="editCorrectAnswer"][value="${question.correctAnswer}"]`).checked = true;
+            
+            // Show modal
+            new bootstrap.Modal(document.getElementById('editQuestionModal')).show();
+        }
+        
+        // Handle edit form submission
+        document.getElementById('editQuestionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = parseInt(document.getElementById('editQuestionId').value);
+            const questionIndex = questions.findIndex(q => q.id === id);
+            
+            if (questionIndex === -1) return;
+            
+            const questionText = document.getElementById('editQuestionText').value;
+            const questionFormula = document.getElementById('editQuestionFormula').value;
+            const questionExplanation = document.getElementById('editQuestionExplanation').value;
+            const options = [
+                document.getElementById('editOption0').value,
+                document.getElementById('editOption1').value,
+                document.getElementById('editOption2').value,
+                document.getElementById('editOption3').value
+            ];
+            const correctAnswer = parseInt(document.querySelector('input[name="editCorrectAnswer"]:checked').value);
+            
+            questions[questionIndex] = {
+                ...questions[questionIndex],
+                question: questionText,
+                formula: questionFormula || undefined,
+                options: options,
+                correctAnswer: correctAnswer,
+                explanation: questionExplanation
+            };
+            
+            loadQuestions();
+            bootstrap.Modal.getInstance(document.getElementById('editQuestionModal')).hide();
+            showToast('Soal berhasil diperbarui!', 'success');
+        });
+        
+        // Fungsi untuk menghapus soal
+        function deleteQuestion(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus soal ini?')) {
+                questions = questions.filter(q => q.id !== id);
+                loadQuestions();
+                showToast('Soal berhasil dihapus!', 'danger');
+            }
+        }
+        
+        // Fungsi untuk generate sample rankings
+        function generateSampleRankings() {
+            const sampleNames = [
+                'Ahmad Ridwan', 'Siti Nurhaliza', 'Budi Santoso', 'Dewi Kartika', 'Eko Prasetyo',
+                'Fitri Handayani', 'Gilang Ramadhan', 'Hani Suryani', 'Indra Wijaya', 'Joko Susilo',
+                'Kartika Sari', 'Lukman Hakim', 'Maya Putri', 'Nanda Pratama', 'Oki Setiawan',
+                'Putri Maharani', 'Qori Ramadan', 'Rina Wulandari', 'Sandi Kurniawan', 'Tina Agustina'
+            ];
+            
+            studentRankings = sampleNames.map((name, index) => ({
+                id: index + 1,
+                name: name,
+                nim: `21${String(index + 1).padStart(6, '0')}`,
+                score: Math.floor(Math.random() * 41) + 60, // Score 60-100
+                totalQuestions: questions.length,
+                correctAnswers: Math.floor((Math.random() * 41 + 60) / 100 * questions.length),
+                timeCompleted: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toLocaleDateString('id-ID')
+            }));
+            
+            // Sort by score (descending)
+            studentRankings.sort((a, b) => b.score - a.score);
+            
+            loadRankings();
+            updateStatistics();
+        }
+        
+        // Fungsi untuk memuat peringkat
+        function loadRankings() {
+            const rankingsList = document.getElementById('rankingsList');
+            
+            if (studentRankings.length === 0) {
+                rankingsList.innerHTML = `
+                    <div class="text-center text-muted">
+                        <i class="fas fa-users fa-3x mb-3"></i>
+                        <p>Belum ada data peringkat mahasiswa</p>
+                        <small>Klik "Generate Data Sample" untuk melihat contoh data</small>
+                    </div>
+                `;
+                return;
+            }
+            
+            let rankingsHtml = `
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Peringkat</th>
+                                <th>NIM</th>
+                                <th>Nama Mahasiswa</th>
+                                <th>Nilai</th>
+                                <th>Benar/Total</th>
+                                <th>Tanggal Selesai</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            studentRankings.forEach((student, index) => {
+                const rank = index + 1;
+                const percentage = Math.round((student.correctAnswers / student.totalQuestions) * 100);
+                let statusClass = 'bg-success';
+                let statusText = 'Lulus';
+                
+                if (student.score < 70) {
+                    statusClass = 'bg-danger';
+                    statusText = 'Tidak Lulus';
+                } else if (student.score < 80) {
+                    statusClass = 'bg-warning';
+                    statusText = 'Cukup';
+                }
+                
+                let rankIcon = '';
+                if (rank === 1) rankIcon = '<i class="fas fa-trophy text-warning"></i> ';
+                else if (rank === 2) rankIcon = '<i class="fas fa-medal text-secondary"></i> ';
+                else if (rank === 3) rankIcon = '<i class="fas fa-award text-warning"></i> ';
+                
+                rankingsHtml += `
+                    <tr>
+                        <td class="fw-bold">${rankIcon}${rank}</td>
+                        <td>${student.nim}</td>
+                        <td>${student.name}</td>
+                        <td><span class="badge bg-primary fs-6">${student.score}</span></td>
+                        <td>${student.correctAnswers}/${student.totalQuestions} (${percentage}%)</td>
+                        <td>${student.timeCompleted}</td>
+                        <td><span class="badge ${statusClass}">${statusText}</span></td>
+                    </tr>
+                `;
+            });
+            
+            rankingsHtml += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            rankingsList.innerHTML = rankingsHtml;
+        }
+        
+        // Fungsi untuk update statistik
+        function updateStatistics() {
+            document.getElementById('statsQuestions').textContent = questions.length;
+            document.getElementById('statsStudents').textContent = studentRankings.length;
+            
+            if (studentRankings.length > 0) {
+                const avgScore = Math.round(studentRankings.reduce((sum, student) => sum + student.score, 0) / studentRankings.length);
+                const highestScore = Math.max(...studentRankings.map(student => student.score));
+                
+                document.getElementById('statsAvgScore').textContent = avgScore;
+                document.getElementById('statsHighestScore').textContent = highestScore;
+            } else {
+                document.getElementById('statsAvgScore').textContent = '0';
+                document.getElementById('statsHighestScore').textContent = '0';
+            }
+        }
+        
+        // Fungsi untuk menampilkan toast notification
+        function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toastContainer') || createToastContainer();
+            
+            const toastId = 'toast_' + Date.now();
+            const toast = document.createElement('div');
+            toast.id = toastId;
+            toast.className = `toast align-items-center text-white bg-${type} border-0`;
+            toast.setAttribute('role', 'alert');
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="fas fa-${type === 'success' ? 'check' : type === 'danger' ? 'times' : 'info'}-circle me-2"></i>
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+            
+            toast.addEventListener('hidden.bs.toast', () => {
+                toast.remove();
+            });
+        }
+        
+        // Fungsi untuk membuat toast container
+        function createToastContainer() {
+            const container = document.createElement('div');
+            container.id = 'toastContainer';
+            container.className = 'toast-container position-fixed top-0 end-0 p-3';
+            container.style.zIndex = '9999';
+            document.body.appendChild(container);
+            return container;
+        }
+        
+        // Initialize aplikasi
+        document.addEventListener('DOMContentLoaded', function() {
+            loadQuestions();
+            loadRankings();
+            updateStatistics();
+            
+            // Event listener untuk tab changes
+            document.querySelectorAll('[data-bs-toggle="pill"]').forEach(tab => {
+                tab.addEventListener('shown.bs.tab', function(e) {
+                    if (e.target.id === 'rankings-tab') {
+                        loadRankings();
+                    } else if (e.target.id === 'statistics-tab') {
+                        updateStatistics();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
