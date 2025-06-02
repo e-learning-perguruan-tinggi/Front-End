@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal Dosen - Aljabar Linear</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --color-1: #B6D0EF;
+            --color-2: #63A3F1;
+            --color-3: #FAFFEE;
+            --color-4: #4F8A9E;
+            --color-5: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--color-1) 0%, var(--color-2) 100%);
+            min-height: 100vh;
+            overflow-x: auto;
+        }
+
+        .header {
+            background: linear-gradient(45deg, var(--color-4), var(--color-2));
+            color: var(--color-5);
+            padding: 2rem 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header h1 {
+            position: relative;
+            z-index: 2;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: slideInDown 0.8s ease-out;
+        }
+
+        .header p {
+            position: relative;
+            z-index: 2;
+            opacity: 0.9;
+            font-size: 1.1rem;
+            animation: slideInUp 0.8s ease-out 0.2s both;
+        }
+
+        .main-container {
+            padding: 2rem 0;
+            min-height: calc(100vh - 200px);
+        }
+
+        .schedule-card {
+            background: var(--color-5);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+            border: 2px solid rgba(99, 163, 241, 0.2);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            max-height: 70vh;
+        }
+
+        .schedule-table {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .schedule-table thead {
+            background: linear-gradient(45deg, var(--color-4), var(--color-2));
+            color: var(--color-5);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .schedule-table th {
+            font-weight: 600;
+            text-align: center;
+            padding: 1rem;
+            border: none;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            white-space: nowrap;
+        }
+
+        .schedule-table tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(99, 163, 241, 0.1);
+        }
+
+        .schedule-table tbody tr:hover {
+            background: linear-gradient(45deg, var(--color-1), var(--color-3));
+            transform: scale(1.01);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .schedule-table td {
+            padding: 1rem;
+            text-align: center;
+            vertical-align: middle;
+            border: none;
+            white-space: nowrap;
+        }
+
+        .day-cell {
+            background: linear-gradient(135deg, var(--color-1), var(--color-3));
+            font-weight: 600;
+            color: var(--color-4);
+            border-radius: 8px;
+            margin: 2px;
+        }
+
+        .time-cell {
+            background: var(--color-3);
+            font-weight: 500;
+            color: var(--color-4);
+            border-radius: 6px;
+        }
+
+        .class-badge {
+            background: linear-gradient(45deg, var(--color-2), var(--color-4));
+            color: var(--color-5);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+            display: inline-block;
+            margin: 2px;
+            box-shadow: 0 4px 15px rgba(99, 163, 241, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .class-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 163, 241, 0.4);
+        }
+
+        .room-info {
+            font-size: 0.85rem;
+            color: var(--color-4);
+            font-weight: 500;
+            margin-top: 0.25rem;
+        }
+
+        .stats-section {
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: var(--color-5);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 2px solid rgba(99, 163, 241, 0.1);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-2);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--color-4);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        .legend {
+            background: var(--color-5);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 2px solid rgba(99, 163, 241, 0.1);
+        }
+
+        .legend h5 {
+            color: var(--color-4);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .legend-item {
+            display: inline-block;
+            margin: 0.25rem;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .floating-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: linear-gradient(45deg, var(--color-2), var(--color-4));
+            color: var(--color-5);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .floating-btn:hover {
+            transform: scale(1.1) rotate(180deg);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .schedule-table {
+                font-size: 0.8rem;
+            }
+            
+            .schedule-table th,
+            .schedule-table td {
+                padding: 0.5rem;
+            }
+            
+            .class-badge {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.8rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="text-center">
+                <h1><i class="fas fa-calculator me-3"></i>Jadwal Dosen Aljabar Linear</h1>
+                <p>Semester Genap 2024/2025 - Program Studi Informatika</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="container-fluid">
+            <div class="legend">
+                <h5><i class="fas fa-info-circle me-2"></i>Keterangan Kelas</h5>
+                <div class="d-flex flex-wrap justify-content-center">
+                    <div class="legend-item"><span class="class-badge">IF02</span></div>
+                    <div class="legend-item"><span class="class-badge">IF03</span></div>
+                    <div class="legend-item"><span class="class-badge">IF04</span></div>
+                    <div class="legend-item"><span class="class-badge">IF05</span></div>
+                    <div class="legend-item"><span class="class-badge">IF06</span></div>
+                </div>
+            </div>
+
+            <div class="schedule-card">
+                <div class="table-container">
+                    <table class="table schedule-table table-borderless">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-calendar-day me-2"></i>Hari</th>
+                                <th><i class="fas fa-clock me-2"></i>Jam</th>
+                                <th><i class="fas fa-users me-2"></i>Kelas</th>
+                                <th><i class="fas fa-door-open me-2"></i>Ruangan</th>
+                                <th><i class="fas fa-user-tie me-2"></i>Dosen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scheduleBody">
+                            <!-- Schedule data will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="stats-section">
+                <div class="row g-4">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-number">5</div>
+                            <div class="stat-label">Total Kelas</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">Dosen Pengampu</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-number">15</div>
+                            <div class="stat-label">Jam Per Minggu</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-number">8</div>
+                            <div class="stat-label">Ruangan Digunakan</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="floating-btn" onclick="refreshSchedule()" title="Refresh Jadwal">
+        <i class="fas fa-sync-alt"></i>
+    </button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const scheduleData = [
+            { day: 'Senin', time: '08:00-10:30', class: 'IF02', room: 'Lab Komputer 1', lecturer: 'Dr. Budi Santoso, M.Si' },
+            { day: 'Senin', time: '10:30-13:00', class: 'IF03', room: 'Lab Komputer 2', lecturer: 'Dr. Budi Santoso, M.Si' },
+            { day: 'Selasa', time: '08:00-10:30', class: 'IF04', room: 'Ruang Kelas A301', lecturer: 'Prof. Dr. Sari Wahyuni, M.T' },
+            { day: 'Selasa', time: '13:00-15:30', class: 'IF05', room: 'Lab Komputer 3', lecturer: 'Prof. Dr. Sari Wahyuni, M.T' },
+            { day: 'Rabu', time: '08:00-10:30', class: 'IF06', room: 'Ruang Kelas A302', lecturer: 'Budi Prasetyo, M.Kom' },
+            { day: 'Rabu', time: '10:30-13:00', class: 'IF02', room: 'Lab Komputer 1', lecturer: 'Dr. Budi Santoso, M.Si' },
+            { day: 'Kamis', time: '08:00-10:30', class: 'IF03', room: 'Ruang Kelas B201', lecturer: 'Prof. Dr. Sari Wahyuni, M.T' },
+            { day: 'Kamis', time: '13:00-15:30', class: 'IF04', room: 'Lab Komputer 2', lecturer: 'Budi Prasetyo, M.Kom' },
+            { day: 'Jumat', time: '08:00-10:30', class: 'IF05', room: 'Ruang Kelas A303', lecturer: 'Dr. Budi Santoso, M.Si' },
+            { day: 'Jumat', time: '10:30-13:00', class: 'IF06', room: 'Lab Komputer 4', lecturer: 'Budi Prasetyo, M.Kom' }
+        ];
+
+        function populateSchedule() {
+            const tbody = document.getElementById('scheduleBody');
+            tbody.innerHTML = '';
+
+            scheduleData.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.style.animationDelay = `${index * 0.1}s`;
+                row.innerHTML = `
+                    <td class="day-cell">${item.day}</td>
+                    <td class="time-cell">${item.time}</td>
+                    <td>
+                        <span class="class-badge">${item.class}</span>
+                    </td>
+                    <td>
+                        <strong>${item.room}</strong>
+                        <div class="room-info">
+                            <i class="fas fa-map-marker-alt me-1"></i>
+                            Gedung Informatika
+                        </div>
+                    </td>
+                    <td>
+                        <strong>${item.lecturer}</strong>
+                        <div class="room-info">
+                            <i class="fas fa-envelope me-1"></i>
+                            ${item.lecturer.toLowerCase().replace(/[^a-z]/g, '').substring(0, 8)}@univ.ac.id
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function refreshSchedule() {
+            const btn = document.querySelector('.floating-btn');
+            btn.style.transform = 'scale(1.1) rotate(360deg)';
+            
+            setTimeout(() => {
+                populateSchedule();
+                btn.style.transform = 'scale(1) rotate(0deg)';
+            }, 500);
+        }
+
+        // Initialize schedule on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            populateSchedule();
+            
+            // Add smooth scroll behavior
+            document.documentElement.style.scrollBehavior = 'smooth';
+            
+            // Add click animation to class badges
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('class-badge')) {
+                    e.target.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        e.target.style.transform = 'scale(1)';
+                    }, 150);
+                }
+            });
+        });
+
+        // Add hover effect to table rows
+        document.addEventListener('mouseover', function(e) {
+            if (e.target.closest('tbody tr')) {
+                const row = e.target.closest('tbody tr');
+                row.style.transform = 'scale(1.02)';
+            }
+        });
+
+        document.addEventListener('mouseout', function(e) {
+            if (e.target.closest('tbody tr')) {
+                const row = e.target.closest('tbody tr');
+                row.style.transform = 'scale(1)';
+            }
+        });
+    </script>
+</body>
+</html>
