@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pengumuman Dosen</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #B6D0EF;
+            --color-secondary: #63A3F1;
+            --color-light: #FAFFEE;
+            --color-dark: #4F8A9E;
+            --color-white: #FFFFFF;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-light) 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, var(--color-dark) 0%, var(--color-secondary) 100%);
+            box-shadow: 0 2px 15px rgba(79, 138, 158, 0.3);
+        }
+
+        .navbar-brand {
+            color: var(--color-white) !important;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .container-fluid {
+            padding: 2rem 1rem;
+        }
+
+        .card {
+            background: var(--color-white);
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(79, 138, 158, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(79, 138, 158, 0.2);
+        }
+
+        .card-header {
+            background: linear-gradient(90deg, var(--color-secondary) 0%, var(--color-primary) 100%);
+            color: var(--color-white);
+            border-radius: 15px 15px 0 0 !important;
+            border: none;
+            padding: 1.25rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--color-secondary) 0%, var(--color-dark) 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, var(--color-dark) 0%, var(--color-secondary) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 163, 241, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(45deg, #ffc107 0%, #ff8c00 100%);
+            border: none;
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #dc3545 0%, #b02a37 100%);
+            border: none;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid var(--color-primary);
+            border-radius: 8px;
+            padding: 0.75rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--color-secondary);
+            box-shadow: 0 0 0 0.2rem rgba(99, 163, 241, 0.25);
+        }
+
+        .announcement-item {
+            background: var(--color-white);
+            border: 2px solid var(--color-primary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .announcement-item:hover {
+            border-color: var(--color-secondary);
+            box-shadow: 0 5px 20px rgba(99, 163, 241, 0.2);
+        }
+
+        .announcement-meta {
+            color: var(--color-dark);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .announcement-content {
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .priority-tinggi {
+            border-left: 5px solid #dc3545;
+        }
+
+        .priority-sedang {
+            border-left: 5px solid #ffc107;
+        }
+
+        .priority-rendah {
+            border-left: 5px solid #28a745;
+        }
+
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+        }
+
+        .modal-header {
+            background: linear-gradient(90deg, var(--color-secondary) 0%, var(--color-primary) 100%);
+            color: var(--color-white);
+            border-radius: 15px 15px 0 0;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-dark) 100%);
+            color: var(--color-white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-graduation-cap me-2"></i>
+                Sistem Pengumuman Dosen
+            </a>
+            <div class="text-white">
+                <i class="fas fa-user-circle me-2"></i>
+                Selamat datang, Dosen
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number" id="totalAnnouncements">0</div>
+                    <div>Total Pengumuman</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number" id="todayAnnouncements">0</div>
+                    <div>Pengumuman Hari Ini</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number" id="highPriorityAnnouncements">0</div>
+                    <div>Prioritas Tinggi</div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number" id="activeAnnouncements">0</div>
+                    <div>Aktif</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Form Pengumuman -->
+            <div class="col-lg-4 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-plus-circle me-2"></i>
+                            <span id="formTitle">Buat Pengumuman Baru</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="announcementForm">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Judul Pengumuman</label>
+                                <input type="text" class="form-control" id="title" placeholder="Contoh: Kelas Hari Ini Kosong" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="content" class="form-label">Isi Pengumuman</label>
+                                <textarea class="form-control" id="content" rows="4" placeholder="Tulis detail pengumuman..." required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Mata Kuliah</label>
+                                <input type="text" class="form-control" id="subject" placeholder="Contoh: Pemrograman Web">
+                            </div>
+                            <div class="mb-3">
+                                <label for="priority" class="form-label">Prioritas</label>
+                                <select class="form-select" id="priority">
+                                    <option value="rendah">Rendah</option>
+                                    <option value="sedang" selected>Sedang</option>
+                                    <option value="tinggi">Tinggi</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Status</label>
+                                <select class="form-select" id="status">
+                                    <option value="aktif" selected>Aktif</option>
+                                    <option value="draft">Draft</option>
+                                </select>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane me-2"></i>
+                                    <span id="submitButtonText">Publikasikan</span>
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="cancelEdit" style="display: none;">
+                                    <i class="fas fa-times me-2"></i>
+                                    Batal Edit
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daftar Pengumuman -->
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>
+                            Daftar Pengumuman
+                        </h5>
+                        <div class="d-flex gap-2">
+                            <select class="form-select form-select-sm" id="filterPriority" style="width: auto;">
+                                <option value="">Semua Prioritas</option>
+                                <option value="tinggi">Prioritas Tinggi</option>
+                                <option value="sedang">Prioritas Sedang</option>
+                                <option value="rendah">Prioritas Rendah</option>
+                            </select>
+                            <select class="form-select form-select-sm" id="filterStatus" style="width: auto;">
+                                <option value="">Semua Status</option>
+                                <option value="aktif">Aktif</option>
+                                <option value="draft">Draft</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="announcementsList">
+                            <div class="text-center text-muted py-5">
+                                <i class="fas fa-bullhorn fa-3x mb-3"></i>
+                                <p>Belum ada pengumuman. Buat pengumuman pertama Anda!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Konfirmasi Hapus -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Konfirmasi Hapus
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Apakah Anda yakin ingin menghapus pengumuman ini?</p>
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Tindakan ini tidak dapat dibatalkan.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">
+                        <i class="fas fa-trash me-2"></i>
+                        Hapus
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Data pengumuman (dalam implementasi nyata, ini akan disimpan di database)
+        let announcements = [];
+        let currentEditId = null;
+        let deleteId = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSampleData();
+            displayAnnouncements();
+            updateStats();
+            bindEvents();
+        });
+
+        // Load sample data
+        function loadSampleData() {
+            announcements = [
+                {
+                    id: 1,
+                    title: "Kelas Pemrograman Web Hari Ini Kosong",
+                    content: "Diinformasikan kepada seluruh mahasiswa bahwa kelas Pemrograman Web hari ini (Senin, 2 Juni 2025) kosong karena dosen sedang menghadiri seminar. Kelas akan diganti pada hari Rabu.",
+                    subject: "Pemrograman Web",
+                    priority: "tinggi",
+                    status: "aktif",
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                },
+                {
+                    id: 2,
+                    title: "Tugas Akhir - Batas Waktu Pengumpulan",
+                    content: "Reminder untuk mahasiswa semester 8 bahwa batas waktu pengumpulan proposal tugas akhir adalah tanggal 15 Juni 2025. Mohon untuk tidak terlambat.",
+                    subject: "Tugas Akhir",
+                    priority: "sedang",
+                    status: "aktif",
+                    createdAt: new Date(Date.now() - 86400000).toISOString(),
+                    updatedAt: new Date(Date.now() - 86400000).toISOString()
+                }
+            ];
+        }
+
+        // Bind events
+        function bindEvents() {
+            document.getElementById('announcementForm').addEventListener('submit', handleSubmit);
+            document.getElementById('cancelEdit').addEventListener('click', cancelEdit);
+            document.getElementById('confirmDelete').addEventListener('click', confirmDelete);
+            document.getElementById('filterPriority').addEventListener('change', displayAnnouncements);
+            document.getElementById('filterStatus').addEventListener('change', displayAnnouncements);
+        }
+
+        // Handle form submission
+        function handleSubmit(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('title').value.trim();
+            const content = document.getElementById('content').value.trim();
+            const subject = document.getElementById('subject').value.trim();
+            const priority = document.getElementById('priority').value;
+            const status = document.getElementById('status').value;
+
+            if (!title || !content) {
+                alert('Judul dan isi pengumuman harus diisi!');
+                return;
+            }
+
+            const now = new Date().toISOString();
+
+            if (currentEditId) {
+                // Update existing announcement
+                const index = announcements.findIndex(a => a.id === currentEditId);
+                if (index !== -1) {
+                    announcements[index] = {
+                        ...announcements[index],
+                        title,
+                        content,
+                        subject,
+                        priority,
+                        status,
+                        updatedAt: now
+                    };
+                }
+            } else {
+                // Create new announcement
+                const newAnnouncement = {
+                    id: Date.now(),
+                    title,
+                    content,
+                    subject,
+                    priority,
+                    status,
+                    createdAt: now,
+                    updatedAt: now
+                };
+                announcements.unshift(newAnnouncement);
+            }
+
+            resetForm();
+            displayAnnouncements();
+            updateStats();
+            showNotification(currentEditId ? 'Pengumuman berhasil diperbarui!' : 'Pengumuman berhasil dibuat!');
+        }
+
+        // Display announcements
+        function displayAnnouncements() {
+            const container = document.getElementById('announcementsList');
+            const priorityFilter = document.getElementById('filterPriority').value;
+            const statusFilter = document.getElementById('filterStatus').value;
+
+            let filteredAnnouncements = announcements.filter(announcement => {
+                return (!priorityFilter || announcement.priority === priorityFilter) &&
+                       (!statusFilter || announcement.status === statusFilter);
+            });
+
+            if (filteredAnnouncements.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted py-5">
+                        <i class="fas fa-search fa-3x mb-3"></i>
+                        <p>Tidak ada pengumuman yang sesuai dengan filter.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredAnnouncements.map(announcement => `
+                <div class="announcement-item priority-${announcement.priority} fade-in">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="mb-0 fw-bold">${announcement.title}</h6>
+                        <div class="d-flex gap-2">
+                            <span class="badge bg-${getPriorityColor(announcement.priority)}">${getPriorityText(announcement.priority)}</span>
+                            <span class="badge bg-${getStatusColor(announcement.status)}">${getStatusText(announcement.status)}</span>
+                        </div>
+                    </div>
+                    <div class="announcement-meta">
+                        <i class="fas fa-book me-1"></i> ${announcement.subject || 'Umum'}
+                        <span class="mx-2">•</span>
+                        <i class="fas fa-clock me-1"></i> ${formatDate(announcement.createdAt)}
+                        ${announcement.updatedAt !== announcement.createdAt ? 
+                            `<span class="mx-2">•</span><i class="fas fa-edit me-1"></i> Diperbarui ${formatDate(announcement.updatedAt)}` : ''
+                        }
+                    </div>
+                    <div class="announcement-content mb-3">
+                        ${announcement.content}
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-warning btn-sm" onclick="editAnnouncement(${announcement.id})">
+                            <i class="fas fa-edit me-1"></i> Edit
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteAnnouncement(${announcement.id})">
+                            <i class="fas fa-trash me-1"></i> Hapus
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Edit announcement
+        function editAnnouncement(id) {
+            const announcement = announcements.find(a => a.id === id);
+            if (!announcement) return;
+
+            currentEditId = id;
+            
+            document.getElementById('title').value = announcement.title;
+            document.getElementById('content').value = announcement.content;
+            document.getElementById('subject').value = announcement.subject || '';
+            document.getElementById('priority').value = announcement.priority;
+            document.getElementById('status').value = announcement.status;
+
+            document.getElementById('formTitle').textContent = 'Edit Pengumuman';
+            document.getElementById('submitButtonText').textContent = 'Perbarui';
+            document.getElementById('cancelEdit').style.display = 'block';
+
+            // Scroll to form
+            document.querySelector('.card').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Cancel edit
+        function cancelEdit() {
+            resetForm();
+        }
+
+        // Delete announcement
+        function deleteAnnouncement(id) {
+            deleteId = id;
+            const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            modal.show();
+        }
+
+        // Confirm delete
+        function confirmDelete() {
+            if (deleteId) {
+                announcements = announcements.filter(a => a.id !== deleteId);
+                displayAnnouncements();
+                updateStats();
+                showNotification('Pengumuman berhasil dihapus!');
+                
+                const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+                modal.hide();
+                deleteId = null;
+            }
+        }
+
+        // Reset form
+        function resetForm() {
+            document.getElementById('announcementForm').reset();
+            currentEditId = null;
+            document.getElementById('formTitle').textContent = 'Buat Pengumuman Baru';
+            document.getElementById('submitButtonText').textContent = 'Publikasikan';
+            document.getElementById('cancelEdit').style.display = 'none';
+            document.getElementById('priority').value = 'sedang';
+            document.getElementById('status').value = 'aktif';
+        }
+
+        // Update statistics
+        function updateStats() {
+            const total = announcements.length;
+            const today = announcements.filter(a => {
+                const createdDate = new Date(a.createdAt).toDateString();
+                const todayDate = new Date().toDateString();
+                return createdDate === todayDate;
+            }).length;
+            const highPriority = announcements.filter(a => a.priority === 'tinggi').length;
+            const active = announcements.filter(a => a.status === 'aktif').length;
+
+            document.getElementById('totalAnnouncements').textContent = total;
+            document.getElementById('todayAnnouncements').textContent = today;
+            document.getElementById('highPriorityAnnouncements').textContent = highPriority;
+            document.getElementById('activeAnnouncements').textContent = active;
+        }
+
+        // Utility functions
+        function getPriorityColor(priority) {
+            switch(priority) {
+                case 'tinggi': return 'danger';
+                case 'sedang': return 'warning';
+                case 'rendah': return 'success';
+                default: return 'secondary';
+            }
+        }
+
+        function getPriorityText(priority) {
+            switch(priority) {
+                case 'tinggi': return 'Tinggi';
+                case 'sedang': return 'Sedang';
+                case 'rendah': return 'Rendah';
+                default: return 'Normal';
+            }
+        }
+
+        function getStatusColor(status) {
+            switch(status) {
+                case 'aktif': return 'success';
+                case 'draft': return 'secondary';
+                default: return 'secondary';
+            }
+        }
+
+        function getStatusText(status) {
+            switch(status) {
+                case 'aktif': return 'Aktif';
+                case 'draft': return 'Draft';
+                default: return 'Unknown';
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            return date.toLocaleDateString('id-ID', options);
+        }
+
+        function showNotification(message) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'alert alert-success alert-dismissible fade show position-fixed';
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            notification.innerHTML = `
+                <i class="fas fa-check-circle me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
