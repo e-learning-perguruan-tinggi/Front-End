@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Monitoring Submission - Dosen</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #B6D0EF;
+            --secondary-blue: #63A3F1;
+            --light-green: #FAFFEE;
+            --dark-teal: #4F8A9E;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--dark-teal);
+        }
+
+        .header h1 {
+            color: var(--dark-teal);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .exam-selector {
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .exam-tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .exam-tab {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: var(--light-green);
+            color: var(--dark-teal);
+        }
+
+        .exam-tab.active {
+            background: var(--dark-teal);
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(79, 138, 158, 0.3);
+        }
+
+        .exam-tab:hover:not(.active) {
+            background: var(--primary-blue);
+            transform: translateY(-2px);
+        }
+
+        .class-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .class-card {
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border-top: 4px solid var(--secondary-blue);
+        }
+
+        .class-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .class-header {
+            background: linear-gradient(135deg, var(--secondary-blue), var(--primary-blue));
+            color: var(--white);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .class-header h3 {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .class-header .stats {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .student-list {
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .student-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .student-item:hover {
+            background: var(--light-green);
+            transform: translateX(5px);
+        }
+
+        .student-item.submitted {
+            background: rgba(40, 167, 69, 0.1);
+            border-left-color: #28a745;
+        }
+
+        .student-item.not-submitted {
+            background: rgba(220, 53, 69, 0.1);
+            border-left-color: #dc3545;
+        }
+
+        .student-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .student-name {
+            font-weight: 600;
+            color: var(--dark-teal);
+            margin-bottom: 2px;
+        }
+
+        .student-id {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .submission-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-badge.submitted {
+            background: #28a745;
+            color: white;
+        }
+
+        .status-badge.not-submitted {
+            background: #dc3545;
+            color: white;
+        }
+
+        .download-btn {
+            background: var(--dark-teal);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: var(--secondary-blue);
+            transform: scale(1.05);
+        }
+
+        .summary-stats {
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            background: var(--light-green);
+            border-top: 3px solid var(--dark-teal);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark-teal);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .refresh-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--dark-teal);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            background: var(--secondary-blue);
+            transform: scale(1.1);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 50px;
+            color: var(--dark-teal);
+        }
+
+        .spinner {
+            border: 4px solid var(--primary-blue);
+            border-top: 4px solid var(--dark-teal);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 15px;
+            }
+            
+            .class-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .exam-tabs {
+                flex-direction: column;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-graduation-cap"></i> Dashboard Monitoring Submission</h1>
+            <p>Pantau progress submission UTS dan UAS mahasiswa secara real-time</p>
+        </div>
+
+        <!-- Exam Selector -->
+        <div class="exam-selector">
+            <div class="exam-tabs">
+                <button class="exam-tab active" data-exam="uts">
+                    <i class="fas fa-clipboard-check"></i> UTS (Ujian Tengah Semester)
+                </button>
+                <button class="exam-tab" data-exam="uas">
+                    <i class="fas fa-file-alt"></i> UAS (Ujian Akhir Semester)
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Statistics -->
+        <div class="summary-stats">
+            <h4 class="mb-4" style="color: var(--dark-teal);">
+                <i class="fas fa-chart-bar"></i> Ringkasan Statistik <span id="current-exam-label">UTS</span>
+            </h4>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="total-students">70</div>
+                    <div class="stat-label">Total Mahasiswa</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="submitted-count">42</div>
+                    <div class="stat-label">Sudah Submit</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="not-submitted-count">28</div>
+                    <div class="stat-label">Belum Submit</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="completion-rate">60%</div>
+                    <div class="stat-label">Tingkat Penyelesaian</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Memuat data submission...</p>
+        </div>
+
+        <!-- Class Grid -->
+        <div class="class-grid" id="class-grid">
+            <!-- Classes will be generated by JavaScript -->
+        </div>
+
+        <!-- Refresh Button -->
+        <button class="refresh-btn" onclick="refreshData()" title="Refresh Data">
+            <i class="fas fa-sync-alt"></i>
+        </button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Data mahasiswa untuk setiap kelas
+        const classData = {
+            'IF02': [
+                { id: '210102001', name: 'Ahmad Rizki Pratama' },
+                { id: '210102002', name: 'Siti Nurhaliza' },
+                { id: '210102003', name: 'Budi Santoso' },
+                { id: '210102004', name: 'Dewi Sartika' },
+                { id: '210102005', name: 'Eko Prasetyo' },
+                { id: '210102006', name: 'Fitri Handayani' },
+                { id: '210102007', name: 'Gilang Ramadhan' },
+                { id: '210102008', name: 'Hesti Wulandari' },
+                { id: '210102009', name: 'Indra Gunawan' },
+                { id: '210102010', name: 'Jasmine Putri' },
+                { id: '210102011', name: 'Kharisma Dini' },
+                { id: '210102012', name: 'Lukman Hakim' },
+                { id: '210102013', name: 'Maya Sari' },
+                { id: '210102014', name: 'Novi Rahayu' }
+            ],
+            'IF03': [
+                { id: '210103001', name: 'Arief Budiman' },
+                { id: '210103002', name: 'Bella Safitri' },
+                { id: '210103003', name: 'Candra Wijaya' },
+                { id: '210103004', name: 'Dian Pertiwi' },
+                { id: '210103005', name: 'Edi Kurniawan' },
+                { id: '210103006', name: 'Farah Diba' },
+                { id: '210103007', name: 'Guntur Sembiring' },
+                { id: '210103008', name: 'Hani Oktavia' },
+                { id: '210103009', name: 'Irfan Maulana' },
+                { id: '210103010', name: 'Jihan Aulia' },
+                { id: '210103011', name: 'Kevin Ananda' },
+                { id: '210103012', name: 'Laras Sekar' },
+                { id: '210103013', name: 'Muhammad Fadli' },
+                { id: '210103014', name: 'Nisa Amelia' }
+            ],
+            'IF04': [
+                { id: '210104001', name: 'Agus Setiawan' },
+                { id: '210104002', name: 'Bunga Citra' },
+                { id: '210104003', name: 'Dedi Kurniadi' },
+                { id: '210104004', name: 'Elsa Maharani' },
+                { id: '210104005', name: 'Faisal Rahman' },
+                { id: '210104006', name: 'Gita Savitri' },
+                { id: '210104007', name: 'Hendra Kusuma' },
+                { id: '210104008', name: 'Ika Damayanti' },
+                { id: '210104009', name: 'Joko Widodo' },
+                { id: '210104010', name: 'Kartika Sari' },
+                { id: '210104011', name: 'Leo Prakoso' },
+                { id: '210104012', name: 'Mega Wulan' },
+                { id: '210104013', name: 'Nanda Pratama' },
+                { id: '210104014', name: 'Okta Viani' }
+            ],
+            'IF05': [
+                { id: '210105001', name: 'Adi Nugroho' },
+                { id: '210105002', name: 'Berliana Sari' },
+                { id: '210105003', name: 'Cahyo Utomo' },
+                { id: '210105004', name: 'Diana Kusuma' },
+                { id: '210105005', name: 'Erlangga Putra' },
+                { id: '210105006', name: 'Fina Anggraini' },
+                { id: '210105007', name: 'Galih Pradana' },
+                { id: '210105008', name: 'Hilda Ramadhani' },
+                { id: '210105009', name: 'Ivan Setiadi' },
+                { id: '210105010', name: 'Julia Maharani' },
+                { id: '210105011', name: 'Krisna Bayu' },
+                { id: '210105012', name: 'Linda Permata' },
+                { id: '210105013', name: 'Mario Teguh' },
+                { id: '210105014', name: 'Nina Puspita' }
+            ],
+            'IF06': [
+                { id: '210106001', name: 'Andika Pratama' },
+                { id: '210106002', name: 'Bulan Sutrisno' },
+                { id: '210106003', name: 'Chandra Kirana' },
+                { id: '210106004', name: 'Dimas Anggara' },
+                { id: '210106005', name: 'Eni Sagita' },
+                { id: '210106006', name: 'Fahri Hamzah' },
+                { id: '210106007', name: 'Gina Puspasari' },
+                { id: '210106008', name: 'Haris Munandar' },
+                { id: '210106009', name: 'Intan Permata' },
+                { id: '210106010', name: 'Jaya Suprana' },
+                { id: '210106011', name: 'Karina Dewi' },
+                { id: '210106012', name: 'Lestari Ningrum' },
+                { id: '210106013', name: 'Mukti Ali' },
+                { id: '210106014', name: 'Nuri Maulida' }
+            ]
+        };
+
+        // Data submission (simulasi random)
+        let submissionData = {
+            uts: {},
+            uas: {}
+        };
+
+        // File types for simulation
+        const fileTypes = ['pdf', 'doc', 'docx', 'xlsx', 'ppt', 'zip'];
+
+        let currentExam = 'uts';
+
+        // Initialize submission data
+        function initializeSubmissionData() {
+            Object.keys(classData).forEach(className => {
+                submissionData.uts[className] = {};
+                submissionData.uas[className] = {};
+                
+                classData[className].forEach(student => {
+                    // Random submission status for UTS (60% submitted)
+                    submissionData.uts[className][student.id] = {
+                        submitted: Math.random() < 0.6,
+                        submissionTime: generateRandomTime(),
+                        fileName: generateRandomFileName(),
+                        fileType: fileTypes[Math.floor(Math.random() * fileTypes.length)]
+                    };
+                    
+                    // Random submission status for UAS (45% submitted)
+                    submissionData.uas[className][student.id] = {
+                        submitted: Math.random() < 0.45,
+                        submissionTime: generateRandomTime(),
+                        fileName: generateRandomFileName(),
+                        fileType: fileTypes[Math.floor(Math.random() * fileTypes.length)]
+                    };
+                });
+            });
+        }
+
+        function generateRandomTime() {
+            const dates = [
+                '2025-05-28 14:30',
+                '2025-05-29 09:15',
+                '2025-05-29 16:45',
+                '2025-05-30 11:20',
+                '2025-05-30 13:55',
+                '2025-06-01 08:30',
+                '2025-06-01 15:10'
+            ];
+            return dates[Math.floor(Math.random() * dates.length)];
+        }
+
+        function generateRandomFileName() {
+            const prefixes = ['UTS_', 'UAS_', 'Jawaban_', 'Soal_', 'Tugas_'];
+            const suffixes = ['_Final', '_Rev1', '_Complete', '', '_Submit'];
+            const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+            const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
+            return prefix + 'Student' + suffix;
+        }
+
+        function renderClassCards() {
+            const classGrid = document.getElementById('class-grid');
+            classGrid.innerHTML = '';
+
+            Object.keys(classData).forEach(className => {
+                const students = classData[className];
+                const submissions = submissionData[currentExam][className];
+                
+                let submittedCount = 0;
+                students.forEach(student => {
+                    if (submissions[student.id].submitted) {
+                        submittedCount++;
+                    }
+                });
+
+                const card = document.createElement('div');
+                card.className = 'class-card';
+                card.innerHTML = `
+                    <div class="class-header">
+                        <h3>${className}</h3>
+                        <div class="stats">
+                            ${submittedCount}/14 mahasiswa telah submit
+                        </div>
+                    </div>
+                    <div class="student-list">
+                        ${students.map(student => {
+                            const submission = submissions[student.id];
+                            const statusClass = submission.submitted ? 'submitted' : 'not-submitted';
+                            const statusIcon = submission.submitted ? 'fa-check-circle' : 'fa-times-circle';
+                            const statusText = submission.submitted ? 'Submitted' : 'Belum Submit';
+                            
+                            return `
+                                <div class="student-item ${statusClass}">
+                                    <div class="student-info">
+                                        <div class="student-name">${student.name}</div>
+                                        <div class="student-id">${student.id}</div>
+                                        ${submission.submitted ? `<div class="text-muted" style="font-size: 11px; margin-top: 2px;">${submission.submissionTime}</div>` : ''}
+                                    </div>
+                                    <div class="submission-status">
+                                        <div class="status-badge ${statusClass}">
+                                            <i class="fas ${statusIcon}"></i>
+                                            ${statusText}
+                                        </div>
+                                        ${submission.submitted ? `
+                                            <button class="download-btn" onclick="downloadFile('${student.name}', '${submission.fileName}', '${submission.fileType}')" title="Download ${submission.fileName}.${submission.fileType}">
+                                                <i class="fas fa-download"></i>
+                                            </button>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+                classGrid.appendChild(card);
+            });
+        }
+
+        function updateStatistics() {
+            let totalStudents = 0;
+            let submittedCount = 0;
+
+            Object.keys(classData).forEach(className => {
+                const students = classData[className];
+                const submissions = submissionData[currentExam][className];
+                
+                totalStudents += students.length;
+                students.forEach(student => {
+                    if (submissions[student.id].submitted) {
+                        submittedCount++;
+                    }
+                });
+            });
+
+            const notSubmittedCount = totalStudents - submittedCount;
+            const completionRate = Math.round((submittedCount / totalStudents) * 100);
+
+            document.getElementById('total-students').textContent = totalStudents;
+            document.getElementById('submitted-count').textContent = submittedCount;
+            document.getElementById('not-submitted-count').textContent = notSubmittedCount;
+            document.getElementById('completion-rate').textContent = completionRate + '%';
+            document.getElementById('current-exam-label').textContent = currentExam.toUpperCase();
+        }
+
+        function switchExam(exam) {
+            currentExam = exam;
+            
+            // Update tab active state
+            document.querySelectorAll('.exam-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-exam="${exam}"]`).classList.add('active');
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('class-grid').style.display = 'none';
+            
+            // Simulate loading delay
+            setTimeout(() => {
+                renderClassCards();
+                updateStatistics();
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('class-grid').style.display = 'grid';
+            }, 800);
+        }
+
+        function downloadFile(studentName, fileName, fileType) {
+            // Simulate file download
+            const downloadAlert = document.createElement('div');
+            downloadAlert.className = 'alert alert-success';
+            downloadAlert.style.position = 'fixed';
+            downloadAlert.style.top = '20px';
+            downloadAlert.style.right = '20px';
+            downloadAlert.style.zIndex = '9999';
+            downloadAlert.style.minWidth = '300px';
+            downloadAlert.innerHTML = `
+                <i class="fas fa-download"></i>
+                <strong>Download Dimulai!</strong><br>
+                File: ${fileName}.${fileType}<br>
+                Mahasiswa: ${studentName}
+            `;
+            
+            document.body.appendChild(downloadAlert);
+            
+            setTimeout(() => {
+                downloadAlert.remove();
+            }, 3000);
+        }
+
+        function refreshData() {
+            const refreshBtn = document.querySelector('.refresh-btn');
+            const icon = refreshBtn.querySelector('i');
+            
+            // Animate refresh button
+            icon.style.animation = 'spin 1s linear infinite';
+            
+            // Simulate data refresh
+            setTimeout(() => {
+                // Re-randomize some submission data
+                Object.keys(classData).forEach(className => {
+                    classData[className].forEach(student => {
+                        // 10% chance to change submission status
+                        if (Math.random() < 0.1) {
+                            submissionData[currentExam][className][student.id].submitted = 
+                                !submissionData[currentExam][className][student.id].submitted;
+                            
+                            if (submissionData[currentExam][className][student.id].submitted) {
+                                submissionData[currentExam][className][student.id].submissionTime = generateRandomTime();
+                            }
+                        }
+                    });
+                });
+                
+                renderClassCards();
+                updateStatistics();
+                icon.style.animation = '';
+                
+                // Show refresh notification
+                const notification = document.createElement('div');
+                notification.className = 'alert alert-info';
+                notification.style.position = 'fixed';
+                notification.style.top = '20px';
+                notification.style.right = '20px';
+                notification.style.zIndex = '9999';
+                notification.innerHTML = '<i class="fas fa-sync-alt"></i> Data berhasil diperbarui!';
+                
+                document.body.appendChild(notification);
+                setTimeout(() => notification.remove(), 2000);
+            }, 1000);
+        }
+
+        // Event listeners
+        document.querySelectorAll('.exam-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                switchExam(tab.dataset.exam);
+            });
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeSubmissionData();
+            renderClassCards();
+            updateStatistics();
+        });
+
+        // Auto refresh every 30 seconds
+        setInterval(() => {
+            // Small chance to update data automatically
+            if (Math.random() < 0.3) {
+                refreshData();
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
